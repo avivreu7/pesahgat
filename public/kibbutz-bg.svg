@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="wheatGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8C860"/>
+      <stop offset="100%" stop-color="#C4920A"/>
+    </linearGradient>
+    <linearGradient id="hill1g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8BBD50"/>
+      <stop offset="100%" stop-color="#5A8A3C"/>
+    </linearGradient>
+    <linearGradient id="hill2g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6BA840"/>
+      <stop offset="100%" stop-color="#4A7830"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="15%" cy="26%" r="22%">
+      <stop offset="0%" stop-color="#FFD700" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#FFE080" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#FFD700" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sun glow atmosphere -->
+  <rect width="1440" height="900" fill="url(#sunGlow)"/>
+
+  <!-- Sun -->
+  <circle cx="210" cy="220" r="62" fill="#FFD700" opacity="0.88"/>
+  <circle cx="210" cy="220" r="82" fill="none" stroke="#FFD700" stroke-width="2.5" opacity="0.28"/>
+  <circle cx="210" cy="220" r="104" fill="none" stroke="#FFE080" stroke-width="1.5" opacity="0.18"/>
+  <circle cx="210" cy="220" r="128" fill="none" stroke="#FFED80" stroke-width="1" opacity="0.10"/>
+
+  <!-- Sun rays -->
+  <g stroke="#FFD700" stroke-width="28" stroke-linecap="round" opacity="0.055">
+    <line x1="210" y1="220" x2="1440" y2="0"/>
+    <line x1="210" y1="220" x2="1440" y2="220"/>
+    <line x1="210" y1="220" x2="1440" y2="520"/>
+    <line x1="210" y1="220" x2="1100" y2="900"/>
+    <line x1="210" y1="220" x2="560" y2="900"/>
+  </g>
+
+  <!-- Clouds -->
+  <g>
+    <ellipse cx="680" cy="155" rx="92" ry="36" fill="white" opacity="0.88"/>
+    <ellipse cx="638" cy="163" rx="72" ry="28" fill="white" opacity="0.85"/>
+    <ellipse cx="724" cy="161" rx="78" ry="28" fill="white" opacity="0.85"/>
+    <ellipse cx="680" cy="148" rx="54" ry="31" fill="white" opacity="0.9"/>
+
+    <ellipse cx="1090" cy="192" rx="74" ry="30" fill="white" opacity="0.78"/>
+    <ellipse cx="1048" cy="200" rx="58" ry="23" fill="white" opacity="0.75"/>
+    <ellipse cx="1132" cy="198" rx="60" ry="24" fill="white" opacity="0.75"/>
+
+    <ellipse cx="390" cy="122" rx="56" ry="22" fill="white" opacity="0.65"/>
+    <ellipse cx="358" cy="129" rx="42" ry="18" fill="white" opacity="0.62"/>
+    <ellipse cx="422" cy="126" rx="46" ry="19" fill="white" opacity="0.62"/>
+  </g>
+
+  <!-- Far hills (very faint) -->
+  <ellipse cx="720" cy="660" rx="980" ry="210" fill="#B4D48A" opacity="0.38"/>
+  <ellipse cx="80"  cy="680" rx="480" ry="185" fill="#AACC7A" opacity="0.32"/>
+  <ellipse cx="1400" cy="670" rx="420" ry="175" fill="#A2C472" opacity="0.32"/>
+
+  <!-- Egyptian pyramids (Passover Egypt atmosphere, right horizon) -->
+  <g opacity="0.38">
+    <!-- Pyramid 1 – large -->
+    <polygon points="960,608 1200,608 1080,445" fill="#C8A050"/>
+    <polygon points="1080,445 1200,608 1152,608 1122,530" fill="#7A5C18" opacity="0.65"/>
+    <!-- Pyramid 2 – medium -->
+    <polygon points="1175,610 1355,610 1265,485" fill="#C4983C"/>
+    <polygon points="1265,485 1355,610 1325,610 1302,548" fill="#7A5C18" opacity="0.60"/>
+    <!-- Pyramid 3 – small, partially behind hills -->
+    <polygon points="1318,612 1440,612 1380,520" fill="#BF9438"/>
+    <polygon points="1380,520 1440,612 1426,612 1416,560" fill="#7A5C18" opacity="0.55"/>
+    <!-- Distant haze over pyramids -->
+    <rect x="940" y="445" width="510" height="170" fill="url(#hill1g)" opacity="0.12" rx="4"/>
+  </g>
+
+  <!-- Mid hills -->
+  <path d="M0,695 Q120,628 250,648 Q400,668 530,615 Q660,558 780,592 Q900,624 1020,572 Q1150,516 1290,558 Q1390,581 1440,555 L1440,900 L0,900 Z" fill="url(#hill2g)" opacity="0.65"/>
+
+  <!-- Near hills -->
+  <path d="M0,748 Q110,715 215,728 Q335,742 455,712 Q575,680 700,705 Q822,728 940,698 Q1058,668 1180,690 Q1315,712 1440,680 L1440,900 L0,900 Z" fill="url(#hill1g)" opacity="0.82"/>
+
+  <!-- Wheat field base -->
+  <rect x="0" y="800" width="1440" height="100" fill="url(#wheatGrad)" opacity="0.72"/>
+
+  <!-- Wheat stalks (dense, alternating heights) -->
+  <g stroke="#B08020" stroke-width="1.5" opacity="0.50">
+    <line x1="22"   y1="900" x2="25"   y2="800"/><ellipse cx="25"   cy="798" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="52"   y1="900" x2="57"   y2="795"/><ellipse cx="57"   cy="793" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="82"   y1="900" x2="79"   y2="802"/><ellipse cx="79"   cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="112"  y1="900" x2="116"  y2="796"/><ellipse cx="116"  cy="794" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="142"  y1="900" x2="140"  y2="803"/><ellipse cx="140"  cy="801" rx="4" ry="7" fill="#C89830" opacity="0.75"/>
+    <line x1="172"  y1="900" x2="176"  y2="798"/><ellipse cx="176"  cy="796" rx="3" ry="6" fill="#E0B848" opacity="0.75"/>
+    <line x1="202"  y1="900" x2="199"  y2="801"/><ellipse cx="199"  cy="799" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="232"  y1="900" x2="236"  y2="796"/><ellipse cx="236"  cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="262"  y1="900" x2="259"  y2="802"/><ellipse cx="259"  cy="800" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="292"  y1="900" x2="296"  y2="797"/><ellipse cx="296"  cy="795" rx="3" ry="6" fill="#E0B848" opacity="0.75"/>
+    <line x1="322"  y1="900" x2="319"  y2="801"/><ellipse cx="319"  cy="799" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="352"  y1="900" x2="356"  y2="796"/><ellipse cx="356"  cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="382"  y1="900" x2="379"  y2="802"/><ellipse cx="379"  cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="412"  y1="900" x2="416"  y2="797"/><ellipse cx="416"  cy="795" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="442"  y1="900" x2="439"  y2="803"/><ellipse cx="439"  cy="801" rx="4" ry="7" fill="#C89830" opacity="0.75"/>
+    <line x1="472"  y1="900" x2="476"  y2="796"/><ellipse cx="476"  cy="794" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="502"  y1="900" x2="499"  y2="801"/><ellipse cx="499"  cy="799" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="532"  y1="900" x2="536"  y2="796"/><ellipse cx="536"  cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="562"  y1="900" x2="559"  y2="802"/><ellipse cx="559"  cy="800" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="592"  y1="900" x2="596"  y2="797"/><ellipse cx="596"  cy="795" rx="3" ry="6" fill="#E0B848" opacity="0.75"/>
+    <line x1="622"  y1="900" x2="619"  y2="801"/><ellipse cx="619"  cy="799" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="652"  y1="900" x2="656"  y2="796"/><ellipse cx="656"  cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="682"  y1="900" x2="679"  y2="802"/><ellipse cx="679"  cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="712"  y1="900" x2="716"  y2="796"/><ellipse cx="716"  cy="794" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="742"  y1="900" x2="739"  y2="803"/><ellipse cx="739"  cy="801" rx="4" ry="7" fill="#C89830" opacity="0.75"/>
+    <line x1="772"  y1="900" x2="776"  y2="797"/><ellipse cx="776"  cy="795" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="802"  y1="900" x2="799"  y2="801"/><ellipse cx="799"  cy="799" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="832"  y1="900" x2="836"  y2="796"/><ellipse cx="836"  cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="862"  y1="900" x2="859"  y2="802"/><ellipse cx="859"  cy="800" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="892"  y1="900" x2="896"  y2="796"/><ellipse cx="896"  cy="794" rx="3" ry="6" fill="#E0B848" opacity="0.75"/>
+    <line x1="922"  y1="900" x2="919"  y2="801"/><ellipse cx="919"  cy="799" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="952"  y1="900" x2="956"  y2="796"/><ellipse cx="956"  cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="982"  y1="900" x2="979"  y2="802"/><ellipse cx="979"  cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="1012" y1="900" x2="1016" y2="797"/><ellipse cx="1016" cy="795" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="1042" y1="900" x2="1039" y2="801"/><ellipse cx="1039" cy="799" rx="4" ry="7" fill="#C89830" opacity="0.75"/>
+    <line x1="1072" y1="900" x2="1076" y2="796"/><ellipse cx="1076" cy="794" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="1102" y1="900" x2="1099" y2="802"/><ellipse cx="1099" cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="1132" y1="900" x2="1136" y2="796"/><ellipse cx="1136" cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="1162" y1="900" x2="1159" y2="802"/><ellipse cx="1159" cy="800" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="1192" y1="900" x2="1196" y2="797"/><ellipse cx="1196" cy="795" rx="3" ry="6" fill="#E0B848" opacity="0.75"/>
+    <line x1="1222" y1="900" x2="1219" y2="801"/><ellipse cx="1219" cy="799" rx="4" ry="7" fill="#D4A843" opacity="0.75"/>
+    <line x1="1252" y1="900" x2="1256" y2="796"/><ellipse cx="1256" cy="794" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+    <line x1="1282" y1="900" x2="1279" y2="802"/><ellipse cx="1279" cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="1312" y1="900" x2="1316" y2="797"/><ellipse cx="1316" cy="795" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="1342" y1="900" x2="1339" y2="801"/><ellipse cx="1339" cy="799" rx="4" ry="7" fill="#C89830" opacity="0.75"/>
+    <line x1="1372" y1="900" x2="1376" y2="796"/><ellipse cx="1376" cy="794" rx="3" ry="6" fill="#D4A843" opacity="0.75"/>
+    <line x1="1402" y1="900" x2="1399" y2="802"/><ellipse cx="1399" cy="800" rx="4" ry="7" fill="#E0B848" opacity="0.75"/>
+    <line x1="1432" y1="900" x2="1436" y2="797"/><ellipse cx="1436" cy="795" rx="3" ry="6" fill="#C89830" opacity="0.75"/>
+  </g>
+
+  <!-- Cypress trees (right cluster) -->
+  <ellipse cx="1118" cy="612" rx="23" ry="92" fill="#3D6B2C"/>
+  <ellipse cx="1158" cy="630" rx="19" ry="78" fill="#4A8035"/>
+  <ellipse cx="1196" cy="618" rx="21" ry="90" fill="#345E28"/>
+
+  <!-- Olive tree (left) -->
+  <rect x="294" y="718" width="11" height="52" fill="#7A5A2A" rx="3"/>
+  <ellipse cx="300" cy="698" rx="46" ry="36" fill="#6B8A2C"/>
+  <ellipse cx="282" cy="708" rx="32" ry="26" fill="#7A9E35"/>
+  <ellipse cx="320" cy="706" rx="30" ry="24" fill="#608025"/>
+  <ellipse cx="302" cy="690" rx="22" ry="18" fill="#8AAD38"/>
+
+  <!-- Kibbutz building (center, warm tones) -->
+  <rect x="782" y="678" width="142" height="122" fill="#EDD9A8" opacity="0.62" rx="3"/>
+  <polygon points="768,678 938,678 855,638" fill="#C8A87A" opacity="0.62"/>
+  <rect x="802" y="700" width="29" height="36" fill="#B8D8E8" opacity="0.72" rx="2"/>
+  <rect x="843" y="700" width="29" height="36" fill="#B8D8E8" opacity="0.72" rx="2"/>
+  <rect x="884" y="700" width="29" height="36" fill="#B8D8E8" opacity="0.72" rx="2"/>
+  <rect x="847" y="758" width="30" height="42" fill="#8B6040" opacity="0.62" rx="2"/>
+  <!-- Water tower -->
+  <rect x="942" y="638" width="22" height="52" fill="#C8A870" opacity="0.52"/>
+  <ellipse cx="953" cy="636" rx="19" ry="13" fill="#DAC080" opacity="0.52"/>
+  <!-- Chimney smoke -->
+  <ellipse cx="800" cy="625" rx="8" ry="5" fill="white" opacity="0.4"/>
+  <ellipse cx="803" cy="612" rx="6" ry="4" fill="white" opacity="0.28"/>
+  <ellipse cx="806" cy="601" rx="5" ry="3" fill="white" opacity="0.18"/>
+
+  <!-- Tractor silhouette (lower left) -->
+  <g opacity="0.42" transform="translate(148,792)">
+    <rect x="0" y="10" width="68" height="31" rx="4" fill="#3A2810"/>
+    <rect x="10" y="0" width="36" height="21" rx="3" fill="#4A3820"/>
+    <rect x="52" y="5" width="20" height="13" rx="2" fill="#5A4828"/>
+    <circle cx="14" cy="43" r="14" fill="#2A1808" stroke="#4A3020" stroke-width="2"/>
+    <circle cx="52" cy="41" r="11" fill="#2A1808" stroke="#4A3020" stroke-width="2"/>
+    <rect x="34" y="15" width="26" height="8" rx="1" fill="#7A6848" opacity="0.8"/>
+  </g>
+
+  <!-- Foreground grass -->
+  <rect x="0" y="862" width="1440" height="38" fill="#5A8A3C" opacity="0.68"/>
+  <ellipse cx="720" cy="860" rx="920" ry="32" fill="#7DBD52" opacity="0.52"/>
+
+  <!-- Red anemones (כלניות) -->
+  <g opacity="0.85">
+    <circle cx="98"  cy="858" r="5.5" fill="#C0392B"/><circle cx="98"  cy="858" r="2"   fill="#1A0A00"/>
+    <circle cx="138" cy="860" r="4.5" fill="#E74C3C"/><circle cx="138" cy="860" r="1.5" fill="#1A0A00"/>
+    <circle cx="178" cy="856" r="5"   fill="#C0392B"/><circle cx="178" cy="856" r="2"   fill="#1A0A00"/>
+    <circle cx="438" cy="859" r="4.5" fill="#E74C3C"/><circle cx="438" cy="859" r="1.5" fill="#1A0A00"/>
+    <circle cx="480" cy="857" r="5"   fill="#C0392B"/><circle cx="480" cy="857" r="2"   fill="#1A0A00"/>
+    <circle cx="860" cy="858" r="4.5" fill="#E74C3C"/><circle cx="860" cy="858" r="1.5" fill="#1A0A00"/>
+    <circle cx="902" cy="860" r="5"   fill="#C0392B"/><circle cx="902" cy="860" r="2"   fill="#1A0A00"/>
+    <circle cx="1190" cy="857" r="4.5" fill="#E74C3C"/><circle cx="1190" cy="857" r="1.5" fill="#1A0A00"/>
+    <circle cx="1245" cy="859" r="5"   fill="#C0392B"/><circle cx="1245" cy="859" r="2"   fill="#1A0A00"/>
+    <circle cx="1388" cy="856" r="4.5" fill="#E74C3C"/><circle cx="1388" cy="856" r="1.5" fill="#1A0A00"/>
+  </g>
+</svg>
