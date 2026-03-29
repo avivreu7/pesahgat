@@ -255,9 +255,14 @@ export default function CountdownTimer({ targetIso, videoUrl, greetings = [] }: 
                   <Colon />
                   <DigitBlock value={pad(time.s)} label="שניות" />
                 </div>
-                <p className="text-sm tracking-wide font-semibold uppercase" style={{ color: 'var(--text-muted)' }}>
-                  עוד כמה זמן לסדר 🌿
-                </p>
+                <div className="text-center flex flex-col items-center gap-0.5">
+                  <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'var(--text-muted)' }}>
+                    ספירה לאחור עד
+                  </p>
+                  <p className="font-extrabold text-base sm:text-lg" style={{ color: 'var(--wheat)' }}>
+                    🌿 השידור החגיגי – א׳ באפריל, 20:00 🕯️
+                  </p>
+                </div>
               </>
             )}
           </div>

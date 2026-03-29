@@ -75,6 +75,89 @@ export async function updatePromoAction(formData: FormData) {
   revalidatePath('/')
 }
 
+/* ── News ticker ─────────────────────────────────────── */
+export async function addTickerAction(formData: FormData) {
+  const text = (formData.get('text') as string).trim()
+  const supabase = await createClient()
+  const { error } = await supabase.from('news_ticker').insert({ text })
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+}
+
+export async function deleteTickerAction(formData: FormData) {
+  const id = formData.get('id') as string
+  const supabase = await createClient()
+  const { error } = await supabase.from('news_ticker').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+}
+
+export async function toggleTickerAction(formData: FormData) {
+  const id     = formData.get('id') as string
+  const active = formData.get('active') === 'true'
+  const supabase = await createClient()
+  const { error } = await supabase.from('news_ticker').update({ active }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+}
+
+/* ── Promo images ────────────────────────────────────── */
+/**
+ * Requires in Supabase:
+ * 1. Table:   CREATE TABLE promo_images (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, title text NOT NULL DEFAULT '', image_url text NOT NULL, created_at timestamptz DEFAULT now());
+ * 2. Storage: bucket named "promo-images" set to public
+ * 3. Storage policy: allow INSERT for the service_role (or anon if preferred)
+ */
+export async function uploadPromoImageAction(formData: FormData) {
+  const file  = formData.get('image') as File
+  const title = ((formData.get('title') as string) ?? '').trim()
+
+  if (!file || file.size === 0) throw new Error('קובץ חסר')
+
+  const supabase = await createClient()
+  const ext  = file.name.split('.').pop() ?? 'jpg'
+  const path = `${Date.now()}.${ext}`
+
+  const { error: upErr } = await supabase.storage
+    .from('promo-images')
+    .upload(path, file, { contentType: file.type, upsert: false })
+  if (upErr) throw new Error(upErr.message)
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('promo-images')
+    .getPublicUrl(path)
+
+  const { error: dbErr } = await supabase
+    .from('promo_images')
+    .insert({ title, image_url: publicUrl })
+  if (dbErr) throw new Error(dbErr.message)
+
+  revalidatePath('/admin')
+  revalidatePath('/')
+}
+
+export async function deletePromoImageAction(formData: FormData) {
+  const id        = formData.get('id') as string
+  const imageUrl  = formData.get('image_url') as string
+
+  const supabase = await createClient()
+
+  // Extract storage path from URL and remove from bucket
+  try {
+    const url  = new URL(imageUrl)
+    const parts = url.pathname.split('/promo-images/')
+    if (parts[1]) {
+      await supabase.storage.from('promo-images').remove([parts[1]])
+    }
+  } catch { /* ignore storage errors — delete DB row regardless */ }
+
+  const { error } = await supabase.from('promo_images').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin')
+  revalidatePath('/')
+}
+
 /* ── Reset actions ───────────────────────────────────── */
 export async function resetGreetingsAction() {
   const supabase = await createClient()
@@ -90,11 +173,22 @@ export async function resetGreetingsAction() {
 
 export async function resetCounterAction(name: string) {
   const supabase = await createClient()
-  const { error } = await supabase
-    .from('counters')
-    .update({ total_count: 0 })
-    .eq('name', name)
-  if (error) throw new Error(error.message)
+
+  if (name === 'kneidlach') {
+    // Kneidlach now lives in kneidlach_makers — wipe all rows
+    const { error } = await supabase
+      .from('kneidlach_makers')
+      .delete()
+      .not('id', 'is', null)
+    if (error) throw new Error(error.message)
+  } else {
+    const { error } = await supabase
+      .from('counters')
+      .update({ total_count: 0 })
+      .eq('name', name)
+    if (error) throw new Error(error.message)
+  }
+
   revalidatePath('/')
   revalidatePath('/admin')
   revalidatePath('/afikoman')

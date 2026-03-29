@@ -5,17 +5,32 @@ import Script from 'next/script'
 
 /* ── Plague definitions ──────────────────────────────── */
 const PLAGUES = [
-  { id: 'dam',      emoji: '🩸', name: 'דם',          color: '#c0392b', longDesc: 'כל מי מצרים הפכו לדם. הדגים מתו והמצרים לא יכלו לשתות.' },
-  { id: 'tzfardea', emoji: '🐸', name: 'צפרדע',       color: '#27ae60', longDesc: 'צפרדעים כיסו את כל מצרים – בבתים, במיטות ובתנורים.' },
-  { id: 'kinim',    emoji: '🦟', name: 'כינים',       color: '#8e44ad', longDesc: 'עפר האדמה הפך לכינים. החרטומים הודו: "אצבע אלוקים היא".' },
-  { id: 'arov',     emoji: '🦁', name: 'ערוב',        color: '#e67e22', longDesc: 'חיות טרף פשטו על מצרים. ארץ גושן – בה ישראל – נשמרה.' },
-  { id: 'dever',    emoji: '🐄', name: 'דבר',         color: '#7f8c8d', longDesc: 'מגפה פגעה בכל מקנה מצרים. ממקנה ישראל לא מת דבר.' },
-  { id: 'shchin',   emoji: '🔴', name: 'שחין',        color: '#e74c3c', longDesc: 'פצעים מוגלתיים פרצו על כל בני מצרים. גם החרטומים לא יכלו לעמוד.' },
-  { id: 'barad',    emoji: '🌨', name: 'ברד',         color: '#85c1e9', longDesc: 'ברד כבד ירד ובתוכו בערה אש. מי שיראו הכניסו מקניהם הביתה.' },
-  { id: 'arbeh',    emoji: '🦗', name: 'ארבה',        color: '#d4ac0d', longDesc: 'ארבה כיסה את כל עין הארץ ואכל כל הירק שנותר מהברד.' },
-  { id: 'choshech', emoji: '🌑', name: 'חושך',        color: '#2c3e50', longDesc: 'חושך כבד ירד שלושה ימים. לבני ישראל היה אור במושבותיהם.' },
-  { id: 'bechorot', emoji: '👼', name: 'מכת בכורות', color: '#f39c12', longDesc: 'בחצות הלילה מת כל בכור במצרים. בני ישראל נצטוו לשים דם על המשקוף.' },
+  { id: 'dam',      emoji: '🩸', name: 'דם',          color: '#c0392b', longDesc: 'כל מי מצרים הפכו לדם. הדגים מתו והמצרים לא יכלו לשתות.',        particles: 12 },
+  { id: 'tzfardea', emoji: '🐸', name: 'צפרדע',       color: '#27ae60', longDesc: 'צפרדעים כיסו את כל מצרים – בבתים, במיטות ובתנורים.',              particles: 14 },
+  { id: 'kinim',    emoji: '🦟', name: 'כינים',       color: '#8e44ad', longDesc: 'עפר האדמה הפך לכינים. החרטומים הודו: "אצבע אלוקים היא".',          particles: 20 },
+  { id: 'arov',     emoji: '🦁', name: 'ערוב',        color: '#e67e22', longDesc: 'חיות טרף פשטו על מצרים. ארץ גושן – בה ישראל – נשמרה.',             particles: 12 },
+  { id: 'dever',    emoji: '🐄', name: 'דבר',         color: '#7f8c8d', longDesc: 'מגפה פגעה בכל מקנה מצרים. ממקנה ישראל לא מת דבר.',                particles: 10 },
+  { id: 'shchin',   emoji: '🔴', name: 'שחין',        color: '#e74c3c', longDesc: 'פצעים מוגלתיים פרצו על כל בני מצרים. גם החרטומים לא יכלו לעמוד.',  particles: 12 },
+  { id: 'barad',    emoji: '🌨', name: 'ברד',         color: '#85c1e9', longDesc: 'ברד כבד ירד ובתוכו בערה אש. מי שיראו הכניסו מקניהם הביתה.',        particles: 16 },
+  { id: 'arbeh',    emoji: '🦗', name: 'ארבה',        color: '#d4ac0d', longDesc: 'ארבה כיסה את כל עין הארץ ואכל כל הירק שנותר מהברד.',               particles: 20 },
+  { id: 'choshech', emoji: '🌑', name: 'חושך',        color: '#2c3e50', longDesc: 'חושך כבד ירד שלושה ימים. לבני ישראל היה אור במושבותיהם.',           particles: 6  },
+  { id: 'bechorot', emoji: '👼', name: 'מכת בכורות', color: '#f39c12', longDesc: 'בחצות הלילה מת כל בכור במצרים. בני ישראל נצטוו לשים דם על המשקוף.', particles: 10 },
 ]
+
+const DRIFT_ANIMS = ['arDrift0', 'arDrift1', 'arDrift2', 'arDrift3']
+const PARTICLE_SIZES = ['2.2rem', '2.8rem', '3.4rem', '1.9rem']
+
+function buildParticles(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    left:  (i * 137) % 90 + 5,          // 5–95%
+    top:   (i * 89)  % 80 + 8,          // 8–88%
+    anim:  DRIFT_ANIMS[i % 4],
+    dur:   3.5 + (i % 4) * 1.2,         // 3.5–8.1s
+    delay: (i * 0.4) % 3,
+    size:  PARTICLE_SIZES[i % 4],
+    opacity: 0.55 + (i % 3) * 0.15,     // 0.55–0.85
+  }))
+}
 
 export default function ARExperience() {
   const [scriptsReady, setScriptsReady] = useState(false)
@@ -72,7 +87,7 @@ export default function ARExperience() {
 
         {/* Horizontal scroll strip */}
         <div className="w-full overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-          <div className="flex gap-3 px-4" style={{ width: 'max-content' }}>
+          <div className="flex gap-3 px-4" style={{ width: 'max-content', margin: '0 auto' }}>
             {PLAGUES.map((p, i) => (
               <button
                 key={p.id}
@@ -151,7 +166,9 @@ export default function ARExperience() {
     )
   }
 
-  /* ── AR Live View: camera + CSS-centered 3D overlay ── */
+  /* ── AR Live View: camera + particle swarm overlay ── */
+  const particles = buildParticles(current.particles)
+
   return (
     <div style={{ width: '100vw', height: '100dvh', position: 'relative', overflow: 'hidden', background: '#000' }}>
 
@@ -162,49 +179,69 @@ export default function ARExperience() {
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
       />
 
-      {/* Dark tint overlay */}
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.22)', pointerEvents: 'none' }} />
+      {/* Atmospheric plague color overlay */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: `${current.color}30`,
+        transition: 'background 0.6s ease',
+      }} />
 
-      {/* ── Centered 3D plague object ─── */}
+      {/* ── Scattered particle swarm ── */}
+      {particles.map((p, i) => (
+        <div
+          key={`${current.id}-${i}`}
+          style={{
+            position: 'absolute',
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            fontSize: p.size,
+            lineHeight: 1,
+            pointerEvents: 'none',
+            opacity: p.opacity,
+            animation: `${p.anim} ${p.dur}s ease-in-out ${p.delay}s infinite`,
+            filter: `drop-shadow(0 0 8px ${current.color}88)`,
+          }}
+        >
+          {current.emoji}
+        </div>
+      ))}
+
+      {/* ── Centered badge ─── */}
       <div style={{
         position: 'absolute', top: '50%', left: '50%',
         transform: 'translate(-50%, -50%)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
         pointerEvents: 'none',
       }}>
-        {/* Outer pulse ring 1 */}
+        {/* Pulse rings */}
         <div style={{
           position: 'absolute', top: '50%', left: '50%',
           width: 200, height: 200, borderRadius: '50%',
           border: `2px solid ${current.color}`,
           animation: 'arRingPulse 2.4s ease-in-out infinite',
         }} />
-        {/* Outer pulse ring 2 */}
         <div style={{
           position: 'absolute', top: '50%', left: '50%',
-          width: 280, height: 280, borderRadius: '50%',
-          border: `1.5px solid ${current.color}88`,
+          width: 300, height: 300, borderRadius: '50%',
+          border: `1.5px solid ${current.color}66`,
           animation: 'arRingPulse2 3.2s ease-in-out infinite',
         }} />
 
-        {/* Bobbing container */}
-        <div style={{ animation: 'arBob 2s ease-in-out infinite', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-          {/* Spinning emoji */}
+        {/* Center emoji — bobbing glow */}
+        <div style={{ animation: 'arBob 2.2s ease-in-out infinite', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <div style={{
-            fontSize: '7rem',
-            animation: 'arSpin 4s linear infinite',
-            filter: `drop-shadow(0 0 24px ${current.color}) drop-shadow(0 0 60px ${current.color}88)`,
-            display: 'block',
+            fontSize: '8rem',
+            filter: `drop-shadow(0 0 32px ${current.color}) drop-shadow(0 0 70px ${current.color}aa)`,
           }}>
             {current.emoji}
           </div>
-          {/* Plague name badge */}
           <div style={{
-            background: `${current.color}cc`,
-            backdropFilter: 'blur(10px)',
-            borderRadius: 10, padding: '5px 14px',
-            color: 'white', fontWeight: 800, fontSize: 16,
-            border: `1px solid ${current.color}`,
+            background: `${current.color}dd`,
+            backdropFilter: 'blur(12px)',
+            borderRadius: 10, padding: '6px 18px',
+            color: 'white', fontWeight: 800, fontSize: 17,
+            border: `1.5px solid ${current.color}`,
+            boxShadow: `0 4px 20px ${current.color}66`,
           }}>
             {current.name}
           </div>

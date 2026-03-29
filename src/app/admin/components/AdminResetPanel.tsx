@@ -34,8 +34,8 @@ export default function AdminResetPanel() {
       fn: () => resetGreetingsAction(),
     },
     {
-      label: '🫕 אפס מונה כנדלך',
-      desc: 'מונה הכנדלך חוזר ל-0',
+      label: '🫕 אפס מונה קניידלך',
+      desc: 'מונה הקניידלך חוזר ל-0',
       danger: false,
       fn: () => resetCounterAction('kneidlach'),
     },
@@ -47,7 +47,7 @@ export default function AdminResetPanel() {
     },
     {
       label: '💣 אפס הכל',
-      desc: 'ברכות + מוני כנדלך ואפיקומן',
+      desc: 'ברכות + מוני קניידלך ואפיקומן',
       danger: true,
       fn: () => resetAllDataAction(),
     },
