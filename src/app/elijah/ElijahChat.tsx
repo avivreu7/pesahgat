@@ -37,9 +37,10 @@ export default function ElijahChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: history.filter(m => m.role !== 'model' || m !== WELCOME) }),
       })
-      const { reply, limitReached } = await res.json()
+      const data = await res.json()
+      const reply: string = data.reply ?? 'שלום! חג פסח שמח! 🍷'
       setMessages(prev => [...prev, { role: 'model', content: reply }])
-      if (limitReached) setLimited(true)
+      if (data.limitReached) setLimited(true)
     } catch {
       setMessages(prev => [...prev, { role: 'model', content: 'אוי! משהו השתבש... נסה שוב בעוד רגע 🙏' }])
     } finally {

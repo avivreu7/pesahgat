@@ -11,10 +11,12 @@
  *      created_at timestamptz DEFAULT now()
  *    );
  * 2. Storage bucket "photobooth" set to public
+ * 3. SUPABASE_SERVICE_ROLE_KEY in .env.local
  */
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,7 +26,7 @@ export async function GET() {
     .from('photobooth_photos')
     .select('id, family_name, photo_url, frame_id, created_at')
     .order('created_at', { ascending: false })
-    .limit(50)
+    .limit(100)
   return NextResponse.json(data ?? [])
 }
 
@@ -37,12 +39,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'נתונים חסרים' }, { status: 400 })
   }
 
-  // Decode base64 → Buffer
-  const base64 = image_data.replace(/^data:image\/\w+;base64,/, '')
-  const buffer = Buffer.from(base64, 'base64')
-
-  const supabase = await createClient()
-  const path = `${Date.now()}_f${frame_id}.jpg`
+  const base64  = image_data.replace(/^data:image\/\w+;base64,/, '')
+  const buffer  = Buffer.from(base64, 'base64')
+  const supabase = createAdminClient()
+  const path    = `${Date.now()}_f${frame_id}.jpg`
 
   const { error: upErr } = await supabase.storage
     .from('photobooth')
@@ -62,14 +62,18 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { id, photo_url } = await req.json() as { id: string; photo_url: string }
-  const supabase = await createClient()
+  const params    = new URL(req.url).searchParams
+  const id        = params.get('id')
+  const photo_url = params.get('photo_url') ?? ''
+  if (!id) return NextResponse.json({ error: 'id חסר' }, { status: 400 })
+
+  const supabase = createAdminClient()
 
   try {
     const url   = new URL(photo_url)
     const parts = url.pathname.split('/photobooth/')
     if (parts[1]) await supabase.storage.from('photobooth').remove([parts[1]])
-  } catch { /* ignore */ }
+  } catch { /* ignore storage errors */ }
 
   const { error } = await supabase.from('photobooth_photos').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

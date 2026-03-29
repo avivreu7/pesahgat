@@ -124,6 +124,11 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
         body: JSON.stringify({ family_name: familyName, frame_id: frameId, image_data: captured }),
       })
       const newPhoto = await res.json()
+      if (newPhoto?.id) {
+        // Remember this photo so the user can delete/download it later
+        const mine: string[] = JSON.parse(localStorage.getItem('my_photobooth_ids') ?? '[]')
+        localStorage.setItem('my_photobooth_ids', JSON.stringify([newPhoto.id, ...mine]))
+      }
       setPhotos(prev => [newPhoto, ...prev])
       setStep('done')
     } catch { /* silent */ }
@@ -246,7 +251,59 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
 }
 
 /* ── Gallery ──────────────────────────────────────────── */
-export function PhotoGallery({ photos }: { photos: Photo[] }) {
+export function PhotoGallery({ photos: initial }: { photos: Photo[] }) {
+  const [photos,   setPhotos]  = useState<Photo[]>(initial)
+  const [myIds,    setMyIds]   = useState<string[]>([])
+  const [deleting, setDeleting] = useState<string | null>(null)
+
+  useEffect(() => {
+    const ids: string[] = JSON.parse(localStorage.getItem('my_photobooth_ids') ?? '[]')
+    setMyIds(ids)
+  }, [])
+
+  /* Poll gallery every 10s */
+  useEffect(() => {
+    const poll = async () => {
+      try {
+        const res  = await fetch('/api/photobooth', { cache: 'no-store' })
+        const data = await res.json()
+        setPhotos(data)
+      } catch { /* silent */ }
+    }
+    const id = setInterval(poll, 10_000)
+    return () => clearInterval(id)
+  }, [])
+
+  const downloadPhoto = async (photo: Photo) => {
+    try {
+      const res  = await fetch(photo.photo_url)
+      const blob = await res.blob()
+      const url  = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href     = url
+      link.download = `pesah-gat-${photo.family_name}.jpg`
+      link.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      window.open(photo.photo_url, '_blank')
+    }
+  }
+
+  const deletePhoto = async (photo: Photo) => {
+    if (!confirm('למחוק את התמונה הזאת לתמיד?')) return
+    setDeleting(photo.id)
+    try {
+      await fetch(
+        `/api/photobooth?id=${photo.id}&photo_url=${encodeURIComponent(photo.photo_url)}`,
+        { method: 'DELETE' },
+      )
+      setPhotos(prev => prev.filter(p => p.id !== photo.id))
+      const updated = myIds.filter(x => x !== photo.id)
+      setMyIds(updated)
+      localStorage.setItem('my_photobooth_ids', JSON.stringify(updated))
+    } finally { setDeleting(null) }
+  }
+
   if (!photos.length) return (
     <p className="text-center text-sm py-6" style={{ color: 'var(--text-muted)' }}>
       אין תמונות עדיין – היו הראשונים! 📸
@@ -255,14 +312,36 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {photos.map(p => (
-        <div key={p.id} className="glass-sm rounded-xl overflow-hidden">
-          <img src={p.photo_url} alt={`משפחת ${p.family_name}`} className="w-full aspect-[4/3] object-cover" />
-          <p className="text-xs font-bold px-2 py-1.5 text-center" style={{ color: 'var(--wheat)' }}>
-            🌾 משפחת {p.family_name}
-          </p>
-        </div>
-      ))}
+      {photos.map(p => {
+        const isMine = myIds.includes(p.id)
+        return (
+          <div key={p.id} className="glass-sm rounded-xl overflow-hidden flex flex-col">
+            <img src={p.photo_url} alt={`משפחת ${p.family_name}`} className="w-full aspect-4/3 object-cover" />
+            <p className="text-xs font-bold px-2 py-1 text-center" style={{ color: 'var(--wheat)' }}>
+              🌾 משפחת {p.family_name}
+            </p>
+            {isMine && (
+              <div className="flex gap-1.5 px-2 pb-2">
+                <button
+                  onClick={() => downloadPhoto(p)}
+                  className="btn-primary text-xs py-1 flex-1"
+                  title="הורד תמונה"
+                >
+                  ⬇ הורד
+                </button>
+                <button
+                  onClick={() => deletePhoto(p)}
+                  disabled={deleting === p.id}
+                  className="btn-danger text-xs py-1 flex-1"
+                  title="מחק תמונה"
+                >
+                  {deleting === p.id ? '...' : '🗑 מחק'}
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }

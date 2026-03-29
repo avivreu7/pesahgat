@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import QuiltDrawing from './QuiltDrawing'
+import QuiltSouvenir from './QuiltSouvenir'
 
 export const metadata: Metadata = { title: 'שמיכת הטלאים 🎨 | פסח בקיבוץ' }
 
@@ -28,6 +29,9 @@ export default async function QuiltPage() {
       </header>
 
       <QuiltDrawing initial={drawings} />
+
+      {/* Souvenir download */}
+      <QuiltSouvenir drawings={drawings} />
 
       {/* Quilt gallery */}
       {drawings.length > 0 && (

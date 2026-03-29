@@ -8,7 +8,7 @@ export default async function FoodPage() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('food_items')
-    .select('id, title, description, image_url, offered_by, is_available, created_at')
+    .select('id, title, description, image_url, offered_by, is_available, price, created_at')
     .order('created_at', { ascending: false })
 
   return (

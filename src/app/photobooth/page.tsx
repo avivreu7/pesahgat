@@ -30,14 +30,12 @@ export default async function PhotoBoothPage() {
 
       <PhotoBooth initial={photos} />
 
-      {photos.length > 0 && (
-        <section className="fade-in">
-          <h2 className="heading-section text-center mb-5">
-            🖼 גלריית הקיבוץ ({photos.length} תמונות)
-          </h2>
-          <PhotoGallery photos={photos} />
-        </section>
-      )}
+      <section className="fade-in">
+        <h2 className="heading-section text-center mb-5">
+          🖼 גלריית הקיבוץ
+        </h2>
+        <PhotoGallery photos={photos} />
+      </section>
     </main>
   )
 }

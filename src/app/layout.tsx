@@ -38,8 +38,9 @@ export default function RootLayout({
         {children}
         <ReactionsBar />
         <footer style={{
-          textAlign: 'center', padding: '20px 16px 32px',
-          borderTop: '1px solid rgba(212,168,67,0.15)',
+          textAlign: 'center', padding: '20px 16px 96px',
+          borderTop: '1px solid rgba(212,168,67,0.2)',
+          marginTop: 8,
         }}>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 4 }}>
             נבנה באהבה לקיבוץ גת ❤️ · 2026

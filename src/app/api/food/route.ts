@@ -17,6 +17,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,15 +31,15 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { title, description, offered_by, image_data } = await req.json() as {
-    title: string; description: string; offered_by: string; image_data?: string
+  const { title, description, offered_by, image_data, price } = await req.json() as {
+    title: string; description: string; offered_by: string; image_data?: string; price?: number
   }
 
   if (!title?.trim() || !offered_by?.trim()) {
     return NextResponse.json({ error: 'נתונים חסרים' }, { status: 400 })
   }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   let image_url: string | null = null
 
   if (image_data) {
@@ -56,7 +57,13 @@ export async function POST(req: Request) {
 
   const { data, error } = await supabase
     .from('food_items')
-    .insert({ title: title.trim(), description: (description ?? '').trim(), offered_by: offered_by.trim(), image_url })
+    .insert({
+      title: title.trim(),
+      description: (description ?? '').trim(),
+      offered_by: offered_by.trim(),
+      image_url,
+      price: Math.max(0, Math.min(100, Math.floor(price ?? 0))),
+    })
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
