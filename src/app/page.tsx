@@ -5,7 +5,7 @@ import PromoCarousel from '@/components/PromoCarousel'
 import GreetingsWall from '@/components/GreetingsWall'
 import KneidlachCounter from '@/components/KneidlachCounter'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 const FALLBACK_VIDEO = ''
 const FALLBACK_TIME  = new Date(Date.now() + 48 * 3_600_000).toISOString()
