@@ -5,26 +5,18 @@ import { useRef, useState } from 'react'
 interface PromoImage { id: string; title: string; image_url: string }
 
 async function compressImage(file: File): Promise<string> {
-  return new Promise(resolve => {
-    const img = new Image()
-    const url = URL.createObjectURL(file)
-    img.onload = () => {
-      const MAX = 1200
-      let { width, height } = img
-      if (width > MAX || height > MAX) {
-        const r = Math.min(MAX / width, MAX / height)
-        width  = Math.round(width  * r)
-        height = Math.round(height * r)
-      }
-      const canvas = document.createElement('canvas')
-      canvas.width  = width
-      canvas.height = height
-      canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
-      URL.revokeObjectURL(url)
-      resolve(canvas.toDataURL('image/jpeg', 0.82))
-    }
-    img.src = url
-  })
+  const bitmap = await createImageBitmap(file)
+  const MAX = 1200
+  let w = bitmap.width, h = bitmap.height
+  if (w > MAX || h > MAX) {
+    const r = Math.min(MAX / w, MAX / h)
+    w = Math.round(w * r); h = Math.round(h * r)
+  }
+  const canvas = document.createElement('canvas')
+  canvas.width = w; canvas.height = h
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, w, h)
+  bitmap.close()
+  return canvas.toDataURL('image/jpeg', 0.82)
 }
 
 export default function AdminImagesPanel({ images: initial }: { images: PromoImage[] }) {

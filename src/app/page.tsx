@@ -69,8 +69,7 @@ export default async function HomePage() {
       <section className="w-full max-w-3xl fade-in grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
           { href: '/afikoman',   emoji: '🫓', title: 'מצא את האפיקומן!',   desc: 'משחק כרטיסים לילדים 🎉',      btn: 'שחק',    style: 'btn-gold' },
-          { href: '/ar',         emoji: '🐸', title: '10 המכות – AR',       desc: 'חווית מציאות רבודה 📱',        btn: 'הפעל',   style: 'btn-primary' },
-          { href: '/elijah',     emoji: '🧙‍♂️', title: 'אליהו הנביא',       desc: 'שוחח עם הנביא בליל הסדר 🍷',   btn: 'דבר',    style: 'btn-gold' },
+          { href: '/elijah',     emoji: '🧙‍♂️', title: 'אליהו הנביא',       desc: 'שוחח עם הנביא בליל הסדר 🍷',   btn: 'דבר',    style: 'btn-primary' },
           { href: '/photobooth', emoji: '📸', title: 'עמדת הצילום',         desc: 'סלפי + מסגרת חגיגית לגלריה',  btn: 'צלם',    style: 'btn-primary' },
           { href: '/quilt',      emoji: '🎨', title: 'שמיכת הטלאים',        desc: 'כל משפחה מציירת טלאי אחד',    btn: 'ציירו',  style: 'btn-gold' },
           { href: '/food',       emoji: '🍽', title: 'יד 2 של החג',          desc: 'הציעו מנות לחברי הקיבוץ 😄',  btn: 'כנסו',   style: 'btn-primary' },
@@ -88,6 +87,23 @@ export default async function HomePage() {
             <span className={`${b.style} text-xs px-3 py-1.5 pointer-events-none shrink-0`}>{b.btn}</span>
           </a>
         ))}
+      </section>
+
+      {/* ── Community galleries ─────────────────────────── */}
+      <section className="w-full max-w-3xl fade-in">
+        <h2 className="heading-section text-center mb-4">🖼 גלריות הקהילה</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <a href="/photobooth" className="glass flex flex-col items-center gap-2 p-5 hover:scale-[1.03] transition-transform duration-200 no-underline text-center">
+            <span className="text-4xl">📸</span>
+            <p className="font-extrabold text-sm" style={{ color: 'var(--gold)' }}>גלריית הצילום</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>כל תמונות החג</p>
+          </a>
+          <a href="/quilt" className="glass flex flex-col items-center gap-2 p-5 hover:scale-[1.03] transition-transform duration-200 no-underline text-center">
+            <span className="text-4xl">🎨</span>
+            <p className="font-extrabold text-sm" style={{ color: 'var(--gold)' }}>שמיכת הטלאים</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>ציורי כל המשפחות</p>
+          </a>
+        </div>
       </section>
 
       {/* ── Kneidlach counter ───────────────────────────── */}

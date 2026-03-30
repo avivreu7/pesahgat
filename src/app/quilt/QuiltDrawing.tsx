@@ -104,6 +104,7 @@ export default function QuiltDrawing({ initial }: { initial: Drawing[] }) {
       })
       const newDrawing = await res.json()
       setDrawings(prev => [...prev, newDrawing])
+      window.dispatchEvent(new CustomEvent('quilt:new'))
       setStep('done')
     } catch { /* silent */ }
     finally { setSending(false) }

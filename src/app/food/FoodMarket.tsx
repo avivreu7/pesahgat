@@ -11,28 +11,20 @@ interface FoodItem {
 
 const STARTING_ZUZIM = 100
 
-/* Compress image to max 600px JPEG 0.7 */
+/* Compress image to max 600px JPEG 0.7, using createImageBitmap which respects EXIF orientation */
 async function compressImage(file: File): Promise<string> {
-  return new Promise(resolve => {
-    const img = new Image()
-    const url = URL.createObjectURL(file)
-    img.onload = () => {
-      const MAX = 600
-      let { width, height } = img
-      if (width > MAX || height > MAX) {
-        const ratio = Math.min(MAX / width, MAX / height)
-        width  = Math.round(width  * ratio)
-        height = Math.round(height * ratio)
-      }
-      const canvas = document.createElement('canvas')
-      canvas.width  = width
-      canvas.height = height
-      canvas.getContext('2d')!.drawImage(img, 0, 0, width, height)
-      URL.revokeObjectURL(url)
-      resolve(canvas.toDataURL('image/jpeg', 0.7))
-    }
-    img.src = url
-  })
+  const bitmap = await createImageBitmap(file)
+  const MAX = 600
+  let w = bitmap.width, h = bitmap.height
+  if (w > MAX || h > MAX) {
+    const ratio = Math.min(MAX / w, MAX / h)
+    w = Math.round(w * ratio); h = Math.round(h * ratio)
+  }
+  const canvas = document.createElement('canvas')
+  canvas.width = w; canvas.height = h
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, w, h)
+  bitmap.close()
+  return canvas.toDataURL('image/jpeg', 0.7)
 }
 
 export default function FoodMarket({ initial }: { initial: FoodItem[] }) {
@@ -122,17 +114,24 @@ export default function FoodMarket({ initial }: { initial: FoodItem[] }) {
 
       {/* Wallet bar */}
       {wallet !== null && (
-        <div className="glass-sm rounded-2xl px-5 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🪙</span>
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(212,168,67,0.18) 0%, rgba(139,38,53,0.12) 100%)',
+          border: '1.5px solid rgba(212,168,67,0.45)',
+          borderRadius: '1.25rem', padding: '14px 20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          backdropFilter: 'blur(10px)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: '2.4rem', lineHeight: 1, filter: 'drop-shadow(0 2px 6px rgba(212,168,67,0.5))' }}>🪙</span>
             <div>
-              <p className="font-extrabold text-lg" style={{ color: 'var(--wheat)' }}>{wallet} זוזים</p>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>הארנק שלך</p>
+              <p style={{ fontWeight: 900, fontSize: '1.5rem', color: 'var(--wheat)', lineHeight: 1 }}>{wallet}</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>זוזים בארנק</p>
             </div>
           </div>
-          <p className="text-xs text-center max-w-32" style={{ color: 'var(--text-muted)' }}>
-            מטבע הקיבוץ 🏡<br />1 זוז = כוס קפה 😄
-          </p>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>מטבע הקיבוץ 🏡</p>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>1 זוז = כוס קפה ☕</p>
+          </div>
         </div>
       )}
 
@@ -220,37 +219,88 @@ function FoodCard({
 }) {
   const canAfford = wallet !== null && wallet >= item.price
   const isFree    = item.price === 0
+  const taken     = !item.is_available
 
   return (
-    <div className="glass-sm rounded-2xl overflow-hidden flex flex-col" style={{ opacity: item.is_available ? 1 : 0.6 }}>
-      {item.image_url && (
-        <img src={item.image_url} alt={item.title} className="w-full h-36 object-cover" />
+    <div style={{
+      borderRadius: '1.25rem', overflow: 'hidden',
+      background: 'rgba(255,252,235,0.07)',
+      border: taken ? '1.5px solid rgba(90,55,10,0.2)' : '1.5px solid rgba(212,168,67,0.3)',
+      boxShadow: taken ? 'none' : '0 4px 20px rgba(90,55,10,0.13)',
+      display: 'flex', flexDirection: 'column',
+      position: 'relative',
+      transition: 'box-shadow 0.2s',
+    }}>
+      {/* Taken stamp */}
+      {taken && (
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(10,6,2,0.38)', backdropFilter: 'blur(1px)',
+          pointerEvents: 'none',
+        }}>
+          <span style={{
+            fontSize: '2.5rem', fontWeight: 900, color: '#4ade80',
+            border: '3px solid #4ade80', borderRadius: 8, padding: '2px 12px',
+            transform: 'rotate(-18deg)', opacity: 0.95, letterSpacing: 2,
+            textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+          }}>נלקח ✓</span>
+        </div>
       )}
-      <div className="p-3 flex flex-col gap-1.5 flex-1">
-        <p className="font-extrabold text-sm" style={{ color: 'var(--text-main)' }}>
-          {item.is_available ? '' : '✅ '}{item.title}
-        </p>
+
+      {item.image_url ? (
+        <img src={item.image_url} alt={item.title} style={{ width: '100%', height: 160, objectFit: 'cover', display: 'block' }} />
+      ) : (
+        <div style={{
+          height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'linear-gradient(135deg, rgba(212,168,67,0.12), rgba(139,38,53,0.08))',
+          fontSize: '2.5rem',
+        }}>🍽</div>
+      )}
+
+      <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+        <p style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-main)', margin: 0 }}>{item.title}</p>
         {item.description && (
-          <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{item.description}</p>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>{item.description}</p>
         )}
-        <p className="text-xs font-semibold" style={{ color: 'var(--wheat)' }}>
-          🌾 מוצע על ידי: {item.offered_by}
+        <p style={{ fontSize: '0.72rem', color: 'var(--wheat)', fontWeight: 700, margin: 0 }}>
+          🌾 {item.offered_by}
         </p>
+
         {/* Price badge */}
-        <p className="text-sm font-extrabold" style={{ color: item.price > 0 ? 'var(--wine)' : 'var(--grass)' }}>
-          {item.price > 0 ? `🪙 ${item.price} זוזים` : '🎁 חינם!'}
-        </p>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          background: isFree ? 'rgba(74,222,128,0.15)' : 'rgba(212,168,67,0.15)',
+          border: `1px solid ${isFree ? 'rgba(74,222,128,0.4)' : 'rgba(212,168,67,0.4)'}`,
+          borderRadius: 9999, padding: '2px 10px', alignSelf: 'flex-start',
+        }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: isFree ? '#4ade80' : 'var(--wheat)' }}>
+            {isFree ? '🎁 חינם' : `🪙 ${item.price} זוזים`}
+          </span>
+        </div>
+
         {item.is_available ? (
           <button
             onClick={() => onBuy(item)}
             disabled={!isFree && !canAfford}
-            className={`${canAfford || isFree ? 'btn-primary' : 'btn-ghost'} text-xs py-1.5 mt-1`}
-            title={!canAfford && !isFree ? 'אין מספיק זוזים' : ''}
+            style={{
+              marginTop: 4, borderRadius: 9999, border: 'none', cursor: (!isFree && !canAfford) ? 'not-allowed' : 'pointer',
+              padding: '8px 0', fontWeight: 800, fontSize: '0.82rem',
+              background: (!isFree && !canAfford)
+                ? 'rgba(90,55,10,0.15)'
+                : 'linear-gradient(135deg, var(--gold), var(--wine))',
+              color: (!isFree && !canAfford) ? 'var(--text-muted)' : 'white',
+              transition: 'opacity 0.15s',
+            }}
           >
-            {isFree ? '✋ קחו אותי!' : canAfford ? `✋ קנה ב-${item.price} זוזים` : `🪙 חסרים ${item.price - (wallet ?? 0)} זוזים`}
+            {isFree ? '✋ קחו אותי!' : canAfford ? `✋ קנה ב-${item.price} 🪙` : `🪙 חסרים ${item.price - (wallet ?? 0)}`}
           </button>
         ) : (
-          <button onClick={() => onToggle(item)} className="btn-ghost text-xs py-1.5 mt-1">
+          <button onClick={() => onToggle(item)} style={{
+            marginTop: 4, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 9999, padding: '6px 0', fontSize: '0.78rem', color: 'var(--text-muted)',
+            cursor: 'pointer', fontWeight: 600,
+          }}>
             ↩ החזר לרשימה
           </button>
         )}

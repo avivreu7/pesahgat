@@ -128,6 +128,8 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
         // Remember this photo so the user can delete/download it later
         const mine: string[] = JSON.parse(localStorage.getItem('my_photobooth_ids') ?? '[]')
         localStorage.setItem('my_photobooth_ids', JSON.stringify([newPhoto.id, ...mine]))
+        // Notify gallery to refresh immediately
+        window.dispatchEvent(new CustomEvent('photobooth:new'))
       }
       setPhotos(prev => [newPhoto, ...prev])
       setStep('done')
@@ -155,27 +157,41 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
   )
 
   if (step === 'frame') return (
-    <div className="glass p-6 flex flex-col items-center gap-5 max-w-lg mx-auto">
-      <h2 className="heading-section text-center">בחרו מסגרת</h2>
-      <div className="grid grid-cols-1 gap-3 w-full">
+    <div className="flex flex-col items-center gap-5 max-w-lg mx-auto w-full">
+      <h2 className="heading-section text-center">בחרו מסגרת 🖼</h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, width: '100%' }}>
         {FRAMES.map(f => (
           <button
             key={f.id}
             onClick={() => setFrameId(f.id)}
-            className="glass-sm flex items-center gap-3 px-4 py-3 rounded-2xl text-right"
             style={{
-              border: `2px solid ${frameId === f.id ? f.color : 'rgba(212,168,67,0.2)'}`,
-              background: frameId === f.id ? `${f.color}18` : undefined,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+              padding: '12px 8px', borderRadius: '1rem', cursor: 'pointer',
+              border: `2.5px solid ${frameId === f.id ? f.color : 'rgba(212,168,67,0.2)'}`,
+              background: frameId === f.id ? `${f.color}22` : 'rgba(255,252,235,0.05)',
+              boxShadow: frameId === f.id ? `0 0 16px ${f.color}44` : 'none',
+              transition: 'all 0.18s',
             }}
           >
-            <span style={{ fontSize: '1.8rem' }}>{FRAME_EMOJIS[f.id]}</span>
-            <span className="font-semibold" style={{ color: 'var(--text-main)' }}>{f.label}</span>
-            {frameId === f.id && <span style={{ marginRight: 'auto', color: f.color, fontWeight: 800 }}>✓</span>}
+            {/* Mini frame preview */}
+            <div style={{
+              width: 44, height: 44, borderRadius: 8, position: 'relative',
+              border: `5px solid ${f.color}`,
+              boxShadow: `inset 0 0 0 2px ${f.accent}`,
+              background: `${f.color}15`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1.1rem',
+            }}>
+              {FRAME_EMOJIS[f.id]}
+            </div>
+            <span style={{ fontSize: '0.62rem', fontWeight: 700, color: frameId === f.id ? f.color : 'var(--text-muted)', textAlign: 'center', lineHeight: 1.2 }}>
+              {f.label.split(' ')[0]}
+            </span>
           </button>
         ))}
       </div>
       {permErr && <p className="text-sm" style={{ color: 'var(--wine)' }}>❌ אין גישה למצלמה – אפשר הרשאות ורענן</p>}
-      <button onClick={startCamera} className="btn-primary w-full py-3 text-base">
+      <button onClick={startCamera} className="btn-primary w-full py-3 text-base" style={{ borderRadius: '9999px' }}>
         📷 פתח מצלמה
       </button>
     </div>
@@ -261,7 +277,7 @@ export function PhotoGallery({ photos: initial }: { photos: Photo[] }) {
     setMyIds(ids)
   }, [])
 
-  /* Poll gallery every 10s */
+  /* Poll gallery every 10s + immediate refresh when a new photo is uploaded */
   useEffect(() => {
     const poll = async () => {
       try {
@@ -270,8 +286,16 @@ export function PhotoGallery({ photos: initial }: { photos: Photo[] }) {
         setPhotos(data)
       } catch { /* silent */ }
     }
+    const onNew = () => {
+      // Small delay so the API has time to persist before fetching
+      setTimeout(poll, 800)
+    }
     const id = setInterval(poll, 10_000)
-    return () => clearInterval(id)
+    window.addEventListener('photobooth:new', onNew)
+    return () => {
+      clearInterval(id)
+      window.removeEventListener('photobooth:new', onNew)
+    }
   }, [])
 
   const downloadPhoto = async (photo: Photo) => {
@@ -311,32 +335,55 @@ export function PhotoGallery({ photos: initial }: { photos: Photo[] }) {
   )
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
       {photos.map(p => {
         const isMine = myIds.includes(p.id)
         return (
-          <div key={p.id} className="glass-sm rounded-xl overflow-hidden flex flex-col">
-            <img src={p.photo_url} alt={`משפחת ${p.family_name}`} className="w-full aspect-4/3 object-cover" />
-            <p className="text-xs font-bold px-2 py-1 text-center" style={{ color: 'var(--wheat)' }}>
-              🌾 משפחת {p.family_name}
-            </p>
+          <div key={p.id} style={{
+            borderRadius: '1rem', overflow: 'hidden',
+            border: isMine ? '2px solid rgba(212,168,67,0.7)' : '1.5px solid rgba(212,168,67,0.2)',
+            boxShadow: isMine ? '0 4px 20px rgba(212,168,67,0.2)' : '0 2px 10px rgba(0,0,0,0.15)',
+            display: 'flex', flexDirection: 'column',
+            background: 'rgba(255,252,235,0.06)',
+          }}>
+            <div style={{ position: 'relative' }}>
+              <img
+                src={p.photo_url}
+                alt={`משפחת ${p.family_name}`}
+                style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }}
+              />
+              {isMine && (
+                <div style={{
+                  position: 'absolute', top: 6, right: 6,
+                  background: 'rgba(212,168,67,0.9)', borderRadius: 9999,
+                  padding: '2px 7px', fontSize: '0.6rem', fontWeight: 800, color: '#1a0f00',
+                }}>שלי ⭐</div>
+              )}
+            </div>
+            <div style={{ padding: '7px 10px' }}>
+              <p style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--wheat)', margin: 0, textAlign: 'center' }}>
+                🌾 משפחת {p.family_name}
+              </p>
+            </div>
             {isMine && (
-              <div className="flex gap-1.5 px-2 pb-2">
+              <div style={{ display: 'flex', gap: 6, padding: '0 8px 8px' }}>
                 <button
                   onClick={() => downloadPhoto(p)}
-                  className="btn-primary text-xs py-1 flex-1"
-                  title="הורד תמונה"
-                >
-                  ⬇ הורד
-                </button>
+                  style={{
+                    flex: 1, borderRadius: 9999, border: 'none', cursor: 'pointer',
+                    background: 'linear-gradient(135deg, var(--gold), var(--wine))',
+                    color: 'white', fontWeight: 700, fontSize: '0.7rem', padding: '5px 0',
+                  }}
+                >⬇ הורד</button>
                 <button
                   onClick={() => deletePhoto(p)}
                   disabled={deleting === p.id}
-                  className="btn-danger text-xs py-1 flex-1"
-                  title="מחק תמונה"
-                >
-                  {deleting === p.id ? '...' : '🗑 מחק'}
-                </button>
+                  style={{
+                    flex: 1, borderRadius: 9999, border: '1px solid rgba(239,68,68,0.5)',
+                    cursor: 'pointer', background: 'rgba(239,68,68,0.12)',
+                    color: '#f87171', fontWeight: 700, fontSize: '0.7rem', padding: '5px 0',
+                  }}
+                >{deleting === p.id ? '...' : '🗑 מחק'}</button>
               </div>
             )}
           </div>

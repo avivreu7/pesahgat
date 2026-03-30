@@ -22,9 +22,9 @@ export default function PromoCarousel({ images }: { images: PromoImage[] }) {
   /* Auto-advance */
   useEffect(() => {
     if (images.length <= 1 || paused) return
-    timerRef.current = setInterval(() => go(idx + 1), INTERVAL_MS)
+    timerRef.current = setInterval(() => setIdx(prev => (prev + 1) % images.length), INTERVAL_MS)
     return () => clearInterval(timerRef.current!)
-  }, [idx, paused, go, images.length])
+  }, [paused, images.length])
 
   if (images.length === 0) return null
 
@@ -44,7 +44,7 @@ export default function PromoCarousel({ images }: { images: PromoImage[] }) {
         <div
           style={{
             display: 'flex',
-            transform: `translateX(${idx * 100}%)`,
+            transform: `translateX(-${idx * 100}%)`,
             transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
             direction: 'ltr',
           }}
