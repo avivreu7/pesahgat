@@ -1,7 +1,7 @@
-import { redirect } from 'next/navigation'
+import ARExperience from './ARExperience'
 
-export const metadata = { title: '10 המכות – AR | פסח בקיבוץ' }
+export const metadata = { title: '10 המכות | פסח בקיבוץ גת' }
 
 export default function ARPage() {
-  redirect('/')
+  return <ARExperience />
 }

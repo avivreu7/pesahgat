@@ -60,12 +60,32 @@ export default function AdminPromosPanel({ promos: initial }: { promos: Promo[] 
     setFileError(null)
     setUploading(true)
     try {
-      const fd = new FormData()
-      fd.append('video', file)
-      fd.append('title', title || file.name)
-      const res = await fetch('/api/promo-videos', { method: 'POST', body: fd })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'שגיאה')
+      /* Step 1: get signed upload URL (bypasses Next.js 4.5MB body limit) */
+      const signRes = await fetch('/api/promo-videos/signed-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, content_type: file.type || 'video/mp4' }),
+      })
+      const signData = await signRes.json()
+      if (!signRes.ok) throw new Error(signData.error ?? 'שגיאה ביצירת URL')
+
+      /* Step 2: upload directly to Supabase Storage */
+      const uploadRes = await fetch(signData.signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'video/mp4' },
+        body: file,
+      })
+      if (!uploadRes.ok) throw new Error('שגיאה בהעלאת הקובץ')
+
+      /* Step 3: save metadata to DB */
+      const completeRes = await fetch('/api/promo-videos/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: signData.path, title: title || file.name }),
+      })
+      const data = await completeRes.json()
+      if (!completeRes.ok) throw new Error(data.error ?? 'שגיאה בשמירה')
+
       setPromos(prev => [data, ...prev])
       if (fileRef.current)  fileRef.current.value  = ''
       if (titleRef.current) titleRef.current.value = ''
@@ -116,7 +136,7 @@ export default function AdminPromosPanel({ promos: initial }: { promos: Promo[] 
             style={{ color: 'var(--text-muted)' }}
           />
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            מומלץ עד 50MB — לסרטונים גדולים השתמשו ב-YouTube
+            תומך בסרטונים גדולים — מועלה ישירות לאחסון (ללא הגבלת גודל)
           </p>
           {fileError && (
             <p className="text-sm px-3 py-2 rounded-xl" style={{ background: 'rgba(192,57,43,0.12)', color: '#c0392b' }}>
