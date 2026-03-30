@@ -57,7 +57,7 @@ export default function FoodMarket({ initial }: { initial: FoodItem[] }) {
       try {
         const res  = await fetch('/api/food', { cache: 'no-store' })
         const data = await res.json()
-        setItems(data)
+        if (Array.isArray(data)) setItems(data)
       } catch { /* silent */ }
     }
     const id = setInterval(poll, 15_000)

@@ -9,6 +9,11 @@ const REACTIONS = [
   { id: 'tractor', emoji: '🚜', label: 'טרקטור' },
   { id: 'cow',     emoji: '🐄', label: 'פרה'    },
   { id: 'wine',    emoji: '🍷', label: 'יין'     },
+  { id: 'matzah',  emoji: '🫓', label: 'מצה'    },
+  { id: 'frog',    emoji: '🐸', label: 'צפרדע'  },
+  { id: 'party',   emoji: '🎉', label: 'חגיגה'  },
+  { id: 'star',    emoji: '✡️',  label: 'דוד'    },
+  { id: 'heart',   emoji: '❤️',  label: 'אהבה'   },
 ]
 
 const CHANNEL = 'kibbutz-reactions'
@@ -105,7 +110,7 @@ export default function ReactionsBar() {
         className="fixed bottom-0 inset-x-0 z-50 flex justify-center pb-4 px-4 pointer-events-none"
         aria-label="כפתורי תגובות"
       >
-        <div className="glass-sm pointer-events-auto px-5 py-3 flex items-center gap-4">
+        <div className="glass-sm pointer-events-auto px-4 py-3 flex items-center gap-3 overflow-x-auto max-w-[95vw]" style={{ scrollbarWidth: 'none' }}>
           {REACTIONS.map(r => {
             const count = recentCounts[r.id] ?? 0
             return (

@@ -16,31 +16,31 @@ const FRAME_EMOJIS = ['🍷', '🫓', '🐸', '🕯️', '🌾']
 
 function drawFrame(ctx: CanvasRenderingContext2D, w: number, h: number, frameId: number) {
   const f = FRAMES[frameId]
+  const INSET = 10   // keep frame away from canvas edge so rounded card corners don't clip it
   const border = Math.round(w * 0.045)
 
   ctx.strokeStyle = f.color
   ctx.lineWidth   = border
-  ctx.strokeRect(border / 2, border / 2, w - border, h - border)
+  ctx.strokeRect(INSET + border / 2, INSET + border / 2, w - INSET * 2 - border, h - INSET * 2 - border)
 
   ctx.strokeStyle = f.accent
   ctx.lineWidth   = 3
-  ctx.strokeRect(border + 4, border + 4, w - (border + 4) * 2, h - (border + 4) * 2)
+  ctx.strokeRect(INSET + border + 4, INSET + border + 4, w - INSET * 2 - (border + 4) * 2, h - INSET * 2 - (border + 4) * 2)
 
   const emoji = FRAME_EMOJIS[frameId]
   const es    = Math.round(w * 0.08)
   ctx.font = `${es}px serif`
-  const pad = border + 2
+  const pad = INSET + border + 2
   ctx.fillText(emoji, pad,          pad + es)
   ctx.fillText(emoji, w - pad - es, pad + es)
   ctx.fillText(emoji, pad,          h - pad)
   ctx.fillText(emoji, w - pad - es, h - pad)
 }
 
-export default function PhotoBooth({ initial }: { initial: Photo[] }) {
+export default function PhotoBooth() {
   const [step,       setStep]       = useState<'name' | 'frame' | 'camera' | 'preview' | 'done'>('name')
   const [familyName, setFamilyName] = useState('')
   const [frameId,    setFrameId]    = useState(0)
-  const [photos,     setPhotos]     = useState<Photo[]>(initial)
   const [sending,    setSending]    = useState(false)
   const [permErr,    setPermErr]    = useState(false)
   const [captured,   setCaptured]   = useState<string | null>(null)
@@ -48,18 +48,6 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
   const videoRef  = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const poll = async () => {
-      try {
-        const res  = await fetch('/api/photobooth', { cache: 'no-store' })
-        const data = await res.json()
-        setPhotos(data)
-      } catch { /* silent */ }
-    }
-    const id = setInterval(poll, 10_000)
-    return () => clearInterval(id)
-  }, [])
 
   const startCamera = async () => {
     try {
@@ -118,9 +106,8 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
       if (newPhoto?.id) {
         const mine: string[] = JSON.parse(localStorage.getItem('my_photobooth_ids') ?? '[]')
         localStorage.setItem('my_photobooth_ids', JSON.stringify([newPhoto.id, ...mine]))
-        window.dispatchEvent(new CustomEvent('photobooth:new'))
+        window.dispatchEvent(new CustomEvent('photobooth:new', { detail: newPhoto }))
       }
-      setPhotos(prev => [newPhoto, ...prev])
       setStep('done')
     } catch { /* silent */ }
     finally { setSending(false) }

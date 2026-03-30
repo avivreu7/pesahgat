@@ -17,7 +17,14 @@ export default function QuiltGallery({ initial }: { initial: Drawing[] }) {
         if (Array.isArray(data)) setDrawings(data)
       } catch { /* silent */ }
     }
-    const onNew = () => setTimeout(poll, 600)
+    const onNew = (e: Event) => {
+      const drawing = (e as CustomEvent).detail
+      if (drawing?.id) {
+        setDrawings(prev => prev.some(d => d.id === drawing.id) ? prev : [...prev, drawing])
+      } else {
+        setTimeout(poll, 600)
+      }
+    }
     const id = setInterval(poll, 15_000)
     window.addEventListener('quilt:new', onNew)
     return () => { clearInterval(id); window.removeEventListener('quilt:new', onNew) }

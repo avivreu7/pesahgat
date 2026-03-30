@@ -258,31 +258,54 @@ export default function KneidlachCounter({ initial }: Props) {
 
         {/* Leaderboard */}
         {makers.length > 0 && (
-          <div className="w-full max-w-xs flex flex-col gap-1.5">
+          <div className="w-full max-w-xs flex flex-col gap-2">
             <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: 'var(--text-muted)' }}>
               🏆 טבלת המכינים
             </p>
-            {makers.map((m, i) => (
-              <div
-                key={m.maker_name}
-                className="glass-sm flex items-center justify-between px-4 py-2 rounded-xl"
-                style={{
-                  background: m.maker_name === name ? 'rgba(212,168,67,0.15)' : undefined,
-                  border: m.maker_name === name ? '1.5px solid rgba(212,168,67,0.5)' : undefined,
-                }}
-              >
-                <span className="flex items-center gap-2 font-semibold text-sm" style={{ color: 'var(--text-main)' }}>
-                  <span style={{ fontSize: '1.1rem', minWidth: '1.5rem' }}>
-                    {i < 3 ? MEDALS[i] : `${i + 1}.`}
-                  </span>
-                  {m.maker_name}
-                  {m.maker_name === name && <span style={{ fontSize: '0.7rem', color: 'var(--wheat)' }}>← אתה</span>}
-                </span>
-                <span className="font-extrabold text-sm" style={{ color: 'var(--wheat)' }}>
-                  {m.count} 🫕
-                </span>
-              </div>
-            ))}
+            {makers.map((m, i) => {
+              const maxCount = makers[0]?.count ?? 1
+              const pct = Math.round((m.count / maxCount) * 100)
+              const isMe = m.maker_name === name
+              return (
+                <div
+                  key={m.maker_name}
+                  className="glass-sm flex flex-col gap-1.5 px-4 py-2.5 rounded-xl"
+                  style={{
+                    background: isMe ? 'rgba(212,168,67,0.15)' : undefined,
+                    border: isMe ? '1.5px solid rgba(212,168,67,0.5)' : undefined,
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 font-semibold text-sm" style={{ color: 'var(--text-main)' }}>
+                      <span style={{ fontSize: '1.1rem', minWidth: '1.5rem' }}>
+                        {i < 3 ? MEDALS[i] : `${i + 1}.`}
+                      </span>
+                      {m.maker_name}
+                      {isMe && <span style={{ fontSize: '0.7rem', color: 'var(--wheat)', fontWeight: 800 }}>← אתה</span>}
+                    </span>
+                    <span className="font-extrabold text-sm" style={{ color: 'var(--wheat)' }}>
+                      {m.count} 🫕
+                    </span>
+                  </div>
+                  {/* Progress bar */}
+                  <div style={{
+                    height: 5, borderRadius: 4,
+                    background: 'rgba(255,255,255,0.08)',
+                    overflow: 'hidden',
+                  }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${pct}%`,
+                      borderRadius: 4,
+                      background: isMe
+                        ? 'linear-gradient(90deg, var(--wheat), var(--wine))'
+                        : 'linear-gradient(90deg, rgba(212,168,67,0.5), rgba(139,38,53,0.5))',
+                      transition: 'width 0.4s ease',
+                    }} />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>

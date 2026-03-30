@@ -28,7 +28,7 @@ export default async function PhotoBoothPage() {
         </p>
       </header>
 
-      <PhotoBooth initial={photos} />
+      <PhotoBooth />
 
       <section className="fade-in">
         <h2 className="heading-section text-center mb-5">

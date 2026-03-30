@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import FoodMarket from './FoodMarket'
 
+export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'יד 2 של החג 🍽 | פסח בקיבוץ' }
 
 export default async function FoodPage() {
