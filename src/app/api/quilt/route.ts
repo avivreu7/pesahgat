@@ -60,7 +60,7 @@ export async function POST(req: Request) {
 
   const supabase = createAdminClient()
   await ensureBucket(supabase, 'quilt-drawings')
-  const path = `${Date.now()}_${family_name.trim().replace(/\s/g, '_')}.jpg`
+  const path = `${Date.now()}_${family_name.trim().replace(/[^a-zA-Z0-9]/g, '_')}.jpg`
 
   const { error: upErr } = await supabase.storage
     .from('quilt-drawings')
