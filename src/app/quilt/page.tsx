@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import QuiltDrawing from './QuiltDrawing'
 import QuiltGallery from './QuiltGallery'
 
+export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'שמיכת הטלאים 🎨 | פסח בקיבוץ' }
 
 export default async function QuiltPage() {

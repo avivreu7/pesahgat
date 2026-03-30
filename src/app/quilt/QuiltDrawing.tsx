@@ -19,6 +19,7 @@ export default function QuiltDrawing({ initial }: { initial: Drawing[] }) {
   const [size,       setSize]       = useState(1)
   const [erasing,    setErasing]    = useState(false)
   const [sending,    setSending]    = useState(false)
+  const [error,      setError]      = useState<string | null>(null)
 
   const canvasRef  = useRef<HTMLCanvasElement>(null)
   const isDrawing  = useRef(false)
@@ -95,19 +96,25 @@ export default function QuiltDrawing({ initial }: { initial: Drawing[] }) {
   const submit = async () => {
     const canvas = canvasRef.current; if (!canvas) return
     setSending(true)
-    const imageData = canvas.toDataURL('image/jpeg', 0.8)
+    setError(null)
+    const imageData = canvas.toDataURL('image/jpeg', 0.65)
     try {
       const res = await fetch('/api/quilt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ family_name: familyName, image_data: imageData }),
       })
-      const newDrawing = await res.json()
-      setDrawings(prev => [...prev, newDrawing])
-      window.dispatchEvent(new CustomEvent('quilt:new', { detail: newDrawing }))
+      const body = await res.json()
+      if (!res.ok) {
+        setError(body?.error ?? `שגיאת שרת (${res.status})`)
+        return
+      }
+      setDrawings(prev => [...prev, body])
+      window.dispatchEvent(new CustomEvent('quilt:new', { detail: body }))
       setStep('done')
-    } catch { /* silent */ }
-    finally { setSending(false) }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'שגיאת רשת — נסה שוב')
+    } finally { setSending(false) }
   }
 
   if (step === 'name') return (
@@ -198,6 +205,17 @@ export default function QuiltDrawing({ initial }: { initial: Drawing[] }) {
       <button onClick={submit} disabled={sending} className="btn-primary py-3 text-base">
         {sending ? '...שולח' : '✓ שלח את הטלאי שלנו!'}
       </button>
+
+      {error && (
+        <div style={{
+          background: 'rgba(192,57,43,0.12)', border: '1px solid rgba(192,57,43,0.3)',
+          borderRadius: '0.75rem', padding: '10px 14px',
+          color: '#c0392b', fontSize: '0.85rem', fontWeight: 600,
+          direction: 'rtl',
+        }}>
+          ❌ {error}
+        </div>
+      )}
     </div>
   )
 
