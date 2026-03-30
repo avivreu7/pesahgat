@@ -208,18 +208,20 @@ export default function PhotoBooth({ initial }: { initial: Photo[] }) {
         {/* Frame overlay preview */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          border: `${Math.round(480 * 0.045)}px solid ${FRAMES[frameId].color}`,
+          border: `${Math.round(480 * 0.055)}px solid ${FRAMES[frameId].color}`,
           borderRadius: '1rem',
-          boxShadow: `inset 0 0 0 3px ${FRAMES[frameId].accent}`,
+          boxShadow: `inset 0 0 0 4px ${FRAMES[frameId].accent}, 0 0 0 2px ${FRAMES[frameId].color}88`,
+          outline: `2px solid ${FRAMES[frameId].accent}`,
         }}>
           {[0,1,2,3].map(pos => (
             <span key={pos} style={{
               position: 'absolute',
-              top:    pos < 2 ? 8 : undefined,
-              bottom: pos >= 2 ? 8 : undefined,
-              right:  pos % 2 === 0 ? 8 : undefined,
-              left:   pos % 2 === 1 ? 8 : undefined,
-              fontSize: '1.5rem', lineHeight: 1,
+              top:    pos < 2 ? 10 : undefined,
+              bottom: pos >= 2 ? 10 : undefined,
+              right:  pos % 2 === 0 ? 10 : undefined,
+              left:   pos % 2 === 1 ? 10 : undefined,
+              fontSize: '1.8rem', lineHeight: 1,
+              filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))',
             }}>
               {FRAME_EMOJIS[frameId]}
             </span>

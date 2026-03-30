@@ -27,6 +27,25 @@ export async function GET() {
   return NextResponse.json(data ?? [])
 }
 
+export async function DELETE(req: Request) {
+  const { id, image_url } = Object.fromEntries(new URL(req.url).searchParams)
+  if (!id) return NextResponse.json({ error: 'id חסר' }, { status: 400 })
+
+  const supabase = createAdminClient()
+
+  if (image_url) {
+    try {
+      const url   = new URL(image_url)
+      const parts = url.pathname.split('/quilt-drawings/')
+      if (parts[1]) await supabase.storage.from('quilt-drawings').remove([parts[1]])
+    } catch { /* ignore storage errors */ }
+  }
+
+  const { error } = await supabase.from('quilt_drawings').delete().eq('id', id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ ok: true })
+}
+
 export async function POST(req: Request) {
   const { family_name, image_data } = await req.json() as {
     family_name: string; image_data: string

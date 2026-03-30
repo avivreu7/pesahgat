@@ -10,10 +10,19 @@ interface PromoImage {
 
 const INTERVAL_MS = 4_000
 
-export default function PromoCarousel({ images }: { images: PromoImage[] }) {
+export default function PromoCarousel({ images: initial }: { images: PromoImage[] }) {
+  const [images,  setImages]  = useState<PromoImage[]>(initial)
   const [idx,     setIdx]     = useState(0)
   const [paused,  setPaused]  = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  /* Fetch fresh data on mount so new images appear without waiting for page cache */
+  useEffect(() => {
+    fetch('/api/promo-images', { cache: 'no-store' })
+      .then(r => r.json())
+      .then((data: PromoImage[]) => { if (Array.isArray(data) && data.length > 0) setImages(data) })
+      .catch(() => {/* silent */})
+  }, [])
 
   const go = useCallback((next: number) => {
     setIdx((next + images.length) % images.length)
@@ -25,6 +34,11 @@ export default function PromoCarousel({ images }: { images: PromoImage[] }) {
     timerRef.current = setInterval(() => setIdx(prev => (prev + 1) % images.length), INTERVAL_MS)
     return () => clearInterval(timerRef.current!)
   }, [paused, images.length])
+
+  /* Reset index if images shrink */
+  useEffect(() => {
+    setIdx(prev => (images.length > 0 ? prev % images.length : 0))
+  }, [images.length])
 
   if (images.length === 0) return null
 

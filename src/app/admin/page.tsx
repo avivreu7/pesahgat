@@ -6,7 +6,7 @@ import AdminTickerPanel     from './components/AdminTickerPanel'
 import AdminResetPanel      from './components/AdminResetPanel'
 import AdminBypassPanel     from './components/AdminBypassPanel'
 import AdminLockPanel       from './components/AdminLockPanel'
-import QuiltSouvenir        from '../quilt/QuiltSouvenir'
+import AdminQuiltPanel      from './components/AdminQuiltPanel'
 
 export const revalidate = 0
 
@@ -85,21 +85,11 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Quilt export */}
-      {quiltList.length > 0 && (
-        <section className="glass p-6 fade-in">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><span>🎨</span> ייצוא שמיכת טלאים להדפסה</h2>
-          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
-            {quiltList.length} טלאים — הורד כתמונה אחת להדפסה או שיתוף.
-          </p>
-          <QuiltSouvenir drawings={quiltList} />
-          <div className="mt-3">
-            <a href="/quilt" target="_blank" className="btn-ghost text-sm px-4 py-2">
-              🔗 פתח דף שמיכה
-            </a>
-          </div>
-        </section>
-      )}
+      {/* Quilt management */}
+      <section className="glass p-6 fade-in">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><span>🎨</span> שמיכת טלאים ({quiltList.length} טלאים)</h2>
+        <AdminQuiltPanel drawings={quiltList} />
+      </section>
 
       {/* Bypass */}
       <section className="glass p-6 fade-in" style={{ border: '1px solid rgba(212,168,67,0.45)' }}>
