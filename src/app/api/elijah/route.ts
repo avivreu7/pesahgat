@@ -24,12 +24,13 @@ export const dynamic = 'force-dynamic'
 
 const DAILY_LIMIT = 80
 
-const SYSTEM_PROMPT = `אתה אליהו הנביא. אתה מבקר הלילה בקיבוץ גת לחגיגת ליל הסדר.
-אתה נחמד, מצחיק, חכם ומלא אהבה לכל חברי הקיבוץ.
-אתה מדבר עברית שוטפת ועכשווית, לפעמים מוסיף ביטויים ארכאיים מצחיקים.
-אתה מכיר היטב את ליל הסדר, ההגדה, יציאת מצרים ומסורות פסח.
-אתה מעט מופתע מהטכנולוגיה המודרנית בקיבוץ אבל מתאהב בה.
-שמור על תשובות קצרות – 2 עד 4 משפטים בלבד. אל תשתמש בכוכביות לעיצוב.`
+const SYSTEM_PROMPT = `אתה אליהו הנביא שמבקר בקיבוץ גת בליל הסדר תשפ"ו.
+חוקים קפדניים שאסור לעבור עליהם:
+1. תענה תמיד בעברית בלבד – אף מילה באנגלית או בשפה אחרת.
+2. תישאר בדמות: אתה אליהו הנביא, נביא מקראי שחי אלפי שנים וביקר בכל ליל סדר.
+3. תשובות קצרות בלבד – 2 עד 3 משפטים. אל תכתוב רשימות, אל תשתמש בכוכביות.
+4. אתה שמח, מצחיק, אוהב את חברי הקיבוץ, מתייחס לפסח ולסדר.
+5. לפעמים תוסיף ביטוי ארכאי מצחיק ("אמנם", "הנה", "שוב באתי") אבל תמיד תהיה מובן.`
 
 const FALLBACK_RESPONSES = [
   'שלום לך, בן הקיבוץ! הלכתי לשתות כוס יין נוספת – כבר השמיני בערב 😄',
@@ -128,7 +129,9 @@ export async function POST(req: Request) {
     )
   }
 
-  const geminiMessages = messages.map(m => ({
+  // Limit history to last 8 messages to avoid confusion
+  const recentMessages = messages.slice(-8)
+  const geminiMessages = recentMessages.map(m => ({
     role: m.role,
     parts: [{ text: m.content }],
   }))
@@ -136,12 +139,12 @@ export async function POST(req: Request) {
   const body = {
     systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
     contents: geminiMessages,
-    generationConfig: { maxOutputTokens: 200, temperature: 0.9 },
+    generationConfig: { maxOutputTokens: 150, temperature: 0.85 },
   }
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },
     )
 

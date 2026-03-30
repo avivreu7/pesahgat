@@ -4,6 +4,10 @@ import { useTransition, useState } from 'react'
 import {
   resetGreetingsAction,
   resetCounterAction,
+  resetPhotoboothAction,
+  resetQuiltAction,
+  resetFoodAction,
+  resetElijahMemoryAction,
   resetAllDataAction,
 } from '../actions'
 
@@ -27,30 +31,14 @@ export default function AdminResetPanel() {
   }
 
   const ACTIONS = [
-    {
-      label: '🗑 מחק את כל הברכות',
-      desc: 'כל הברכות בקיר',
-      danger: false,
-      fn: () => resetGreetingsAction(),
-    },
-    {
-      label: '🫕 אפס מונה קניידלך',
-      desc: 'מונה הקניידלך חוזר ל-0',
-      danger: false,
-      fn: () => resetCounterAction('kneidlach'),
-    },
-    {
-      label: '🫓 אפס מונה אפיקומן',
-      desc: 'מונה האפיקומן חוזר ל-0',
-      danger: false,
-      fn: () => resetCounterAction('afikoman'),
-    },
-    {
-      label: '💣 אפס הכל',
-      desc: 'ברכות + מוני קניידלך ואפיקומן',
-      danger: true,
-      fn: () => resetAllDataAction(),
-    },
+    { label: '🗑 מחק ברכות',         desc: 'כל הברכות בקיר',             danger: false, fn: () => resetGreetingsAction() },
+    { label: '🫕 אפס קניידלך',        desc: 'מונה הקניידלך חוזר ל-0',    danger: false, fn: () => resetCounterAction('kneidlach') },
+    { label: '🫓 אפס אפיקומן',        desc: 'מונה האפיקומן חוזר ל-0',    danger: false, fn: () => resetCounterAction('afikoman') },
+    { label: '📸 מחק גלריית צילום',   desc: 'כל תמונות הפוטובוות',       danger: false, fn: () => resetPhotoboothAction() },
+    { label: '🎨 מחק שמיכת טלאים',    desc: 'כל ציורי המשפחות',           danger: false, fn: () => resetQuiltAction() },
+    { label: '🍽 מחק יד 2',           desc: 'כל מנות האוכל',              danger: false, fn: () => resetFoodAction() },
+    { label: '🧙 מחק זיכרון אליהו',   desc: 'זיכרון התשובות של אליהו',   danger: false, fn: () => resetElijahMemoryAction() },
+    { label: '💣 אפס הכל',            desc: 'ברכות + מוני קניידלך ואפיקומן', danger: true, fn: () => resetAllDataAction() },
   ]
 
   return (
@@ -81,8 +69,8 @@ export default function AdminResetPanel() {
           className="text-sm font-semibold rounded-xl px-4 py-2 fade-in"
           style={{
             background: status.ok ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
-            color: status.ok ? '#4ade80' : '#f87171',
-            border: `1px solid ${status.ok ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)'}`,
+            color:      status.ok ? '#4ade80' : '#f87171',
+            border:    `1px solid ${status.ok ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)'}`,
           }}
         >
           {status.msg}
@@ -90,9 +78,7 @@ export default function AdminResetPanel() {
       )}
 
       {isPending && (
-        <p className="text-xs animate-pulse" style={{ color: 'var(--text-muted)' }}>
-          ...מבצע איפוס
-        </p>
+        <p className="text-xs animate-pulse" style={{ color: 'var(--text-muted)' }}>...מבצע איפוס</p>
       )}
     </div>
   )

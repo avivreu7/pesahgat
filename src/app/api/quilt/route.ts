@@ -14,7 +14,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createAdminClient, ensureBucket } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,6 +40,7 @@ export async function POST(req: Request) {
   const buffer = Buffer.from(base64, 'base64')
 
   const supabase = createAdminClient()
+  await ensureBucket(supabase, 'quilt-drawings')
   const path = `${Date.now()}_${family_name.trim().replace(/\s/g, '_')}.jpg`
 
   const { error: upErr } = await supabase.storage

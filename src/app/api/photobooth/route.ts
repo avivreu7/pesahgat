@@ -16,7 +16,7 @@
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createAdminClient, ensureBucket } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -39,10 +39,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'נתונים חסרים' }, { status: 400 })
   }
 
-  const base64  = image_data.replace(/^data:image\/\w+;base64,/, '')
-  const buffer  = Buffer.from(base64, 'base64')
+  const base64   = image_data.replace(/^data:image\/\w+;base64,/, '')
+  const buffer   = Buffer.from(base64, 'base64')
   const supabase = createAdminClient()
-  const path    = `${Date.now()}_f${frame_id}.jpg`
+  await ensureBucket(supabase, 'photobooth')
+  const path = `${Date.now()}_f${frame_id}.jpg`
 
   const { error: upErr } = await supabase.storage
     .from('photobooth')

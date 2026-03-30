@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
 /* ── Israel timezone helper ─────────────────────────── */
@@ -198,4 +199,64 @@ export async function resetAllDataAction() {
   await resetGreetingsAction()
   await resetCounterAction('kneidlach')
   await resetCounterAction('afikoman')
+}
+
+/* ── Reset photobooth ────────────────────────────────── */
+export async function resetPhotoboothAction() {
+  const supabase = createAdminClient()
+  const { data: photos } = await supabase.from('photobooth_photos').select('photo_url').not('id', 'is', null)
+  if (photos?.length) {
+    const paths = photos.map(p => {
+      try { return new URL(p.photo_url).pathname.split('/photobooth/')[1] } catch { return null }
+    }).filter(Boolean) as string[]
+    if (paths.length) await supabase.storage.from('photobooth').remove(paths)
+  }
+  const { error } = await supabase.from('photobooth_photos').delete().not('id', 'is', null)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+  revalidatePath('/photobooth')
+}
+
+/* ── Reset quilt ──────────────────────────────────────── */
+export async function resetQuiltAction() {
+  const supabase = createAdminClient()
+  const { data: drawings } = await supabase.from('quilt_drawings').select('image_url').not('id', 'is', null)
+  if (drawings?.length) {
+    const paths = drawings.map(d => {
+      try { return new URL(d.image_url).pathname.split('/quilt-drawings/')[1] } catch { return null }
+    }).filter(Boolean) as string[]
+    if (paths.length) await supabase.storage.from('quilt-drawings').remove(paths)
+  }
+  const { error } = await supabase.from('quilt_drawings').delete().not('id', 'is', null)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+  revalidatePath('/quilt')
+}
+
+/* ── Reset food ───────────────────────────────────────── */
+export async function resetFoodAction() {
+  const supabase = createAdminClient()
+  const { error } = await supabase.from('food_items').delete().not('id', 'is', null)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+  revalidatePath('/food')
+}
+
+/* ── Reset Elijah memory ─────────────────────────────── */
+export async function resetElijahMemoryAction() {
+  const supabase = createAdminClient()
+  const { error } = await supabase.from('elijah_memory').delete().not('id', 'is', null)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin')
+}
+
+/* ── Site lock mode ───────────────────────────────────── */
+export async function setSiteLockAction(locked: boolean) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('settings')
+    .upsert({ id: 1, site_locked: locked }, { onConflict: 'id' })
+  if (error) throw new Error(error.message)
+  revalidatePath('/')
+  revalidatePath('/admin')
 }

@@ -10,7 +10,7 @@
  */
 
 import { NextResponse } from 'next/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createAdminClient, ensureBucket } from '@/lib/supabase/admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
   if (!image_data) return NextResponse.json({ error: 'image_data חסר' }, { status: 400 })
 
   const supabase = createAdminClient()
+  await ensureBucket(supabase, 'promo-images')
   const base64   = image_data.replace(/^data:image\/\w+;base64,/, '')
   const buffer   = Buffer.from(base64, 'base64')
   const path     = `${Date.now()}.jpg`
