@@ -3,7 +3,6 @@ import CountdownTimer from '@/components/CountdownTimer'
 import PromoVideos from '@/components/PromoVideos'
 import PromoCarousel from '@/components/PromoCarousel'
 import GreetingsWall from '@/components/GreetingsWall'
-import KneidlachCounter from '@/components/KneidlachCounter'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,14 +16,12 @@ export default async function HomePage() {
     { data: settings },
     { data: promos },
     { data: greetings },
-    { data: makers },
     { data: images },
   ] = await Promise.all([
     supabase.from('settings').select('main_video_url, start_time').eq('id', 1).maybeSingle(),
     supabase.from('promo_videos').select('id, title, video_url').order('created_at', { ascending: false }),
     supabase.from('greetings').select('id, family_name, message, gif_url, created_at')
       .order('created_at', { ascending: false }).limit(80),
-    supabase.from('kneidlach_makers').select('maker_name, count').order('count', { ascending: false }),
     supabase.from('promo_images').select('id, title, image_url').order('created_at', { ascending: true }),
   ])
 
@@ -33,11 +30,6 @@ export default async function HomePage() {
   const promoList    = promos    ?? []
   const greetingList = greetings ?? []
   const imageList    = images    ?? []
-  const makerList    = makers    ?? []
-  const kneidlachInit = {
-    makers: makerList,
-    total:  makerList.reduce((s: number, m: { count: number }) => s + m.count, 0),
-  }
 
   return (
     <main className="min-h-dvh flex flex-col items-center px-4 py-10 pb-28 gap-12">
@@ -73,6 +65,7 @@ export default async function HomePage() {
           { href: '/photobooth', emoji: '📸', title: 'עמדת הצילום',         desc: 'סלפי + מסגרת חגיגית לגלריה',  btn: 'צלם',    style: 'btn-primary' },
           { href: '/quilt',      emoji: '🎨', title: 'שמיכת הטלאים',        desc: 'כל משפחה מציירת טלאי אחד',    btn: 'ציירו',  style: 'btn-gold' },
           { href: '/food',       emoji: '🍽', title: 'יד 2 של החג',          desc: 'הציעו מנות לחברי הקיבוץ 😄',  btn: 'כנסו',   style: 'btn-primary' },
+          { href: '/kneidlach',  emoji: '🫕', title: 'קניידלך הקיבוץ',      desc: 'ספרו כמה קניידלך הכנתם 🏆',   btn: 'ספרו',   style: 'btn-gold' },
         ].map(b => (
           <a
             key={b.href}
@@ -104,11 +97,6 @@ export default async function HomePage() {
             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>ציורי כל המשפחות</p>
           </a>
         </div>
-      </section>
-
-      {/* ── Kneidlach counter ───────────────────────────── */}
-      <section className="w-full max-w-3xl fade-in">
-        <KneidlachCounter initial={kneidlachInit} />
       </section>
 
       {/* ── Greetings wall ──────────────────────────────── */}
