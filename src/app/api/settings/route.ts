@@ -8,7 +8,7 @@ export async function GET() {
     const supabase = await createClient()
     const { data, error } = await supabase
       .from('settings')
-      .select('main_video_url, main_video_title, start_time')
+      .select('*')
       .eq('id', 1)
       .maybeSingle()
 

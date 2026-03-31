@@ -18,7 +18,7 @@ export default async function HomePage() {
     { data: greetings },
     { data: images },
   ] = await Promise.all([
-    supabase.from('settings').select('main_video_url, main_video_title, start_time').eq('id', 1).maybeSingle(),
+    supabase.from('settings').select('*').eq('id', 1).maybeSingle(),
     supabase.from('promo_videos').select('id, title, video_url').order('created_at', { ascending: false }),
     supabase.from('greetings').select('id, family_name, message, gif_url, created_at')
       .order('created_at', { ascending: false }).limit(80),

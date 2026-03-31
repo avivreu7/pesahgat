@@ -22,10 +22,32 @@ export async function saveSettingsAction(formData: FormData) {
   const start_time       = toIsraelISO(raw_start_time)
 
   const supabase = await createClient()
+
+  // Core fields — always exist
   const { error } = await supabase
     .from('settings')
-    .upsert({ id: 1, main_video_url, main_video_title, start_time }, { onConflict: 'id' })
+    .upsert({ id: 1, main_video_url, start_time }, { onConflict: 'id' })
+  if (error) throw new Error(error.message)
 
+  // main_video_title — column may not exist yet; ignore if it fails
+  if (main_video_title) {
+    await supabase
+      .from('settings')
+      .update({ main_video_title } as never)
+      .eq('id', 1)
+      .then(() => null) // swallow error if column missing
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/')
+}
+
+/* ── Set time directly (for emergency use) ──────────── */
+export async function setStartTimeAction(isoTime: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('settings')
+    .upsert({ id: 1, start_time: isoTime }, { onConflict: 'id' })
   if (error) throw new Error(error.message)
   revalidatePath('/admin')
   revalidatePath('/')
