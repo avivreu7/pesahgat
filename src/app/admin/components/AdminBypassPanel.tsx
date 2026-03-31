@@ -6,8 +6,8 @@ import { forceVideoNowAction, setStartTimeAction } from '../actions'
 export default function AdminBypassPanel() {
   const [isPending,     startTransition]  = useTransition()
   const [isSetPending,  startSetTransition] = useTransition()
-  const [done,    setDone]    = useState(false)
-  const [setDone, setSetDone] = useState(false)
+  const [done,        setDone]        = useState(false)
+  const [timeSaved,   setTimeSaved]   = useState(false)
   const [timeInput, setTimeInput] = useState('21:45')
 
   const handleForce = () => {
@@ -27,8 +27,8 @@ export default function AdminBypassPanel() {
     const isoTime = `${israelDate}T${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00+03:00`
     startSetTransition(async () => {
       await setStartTimeAction(isoTime)
-      setSetDone(true)
-      setTimeout(() => setSetDone(false), 4000)
+      setTimeSaved(true)
+      setTimeout(() => setTimeSaved(false), 4000)
     })
   }
 
@@ -52,7 +52,7 @@ export default function AdminBypassPanel() {
           >
             {isSetPending ? '...שומר' : '⏰ הגדר שעה'}
           </button>
-          {setDone && <span className="text-sm font-bold" style={{ color: 'var(--grass)' }}>✅ נשמר!</span>}
+          {timeSaved && <span className="text-sm font-bold" style={{ color: 'var(--grass)' }}>✅ נשמר!</span>}
         </div>
       </div>
 
