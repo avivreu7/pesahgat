@@ -5,6 +5,7 @@ import { saveSettingsAction } from '../actions'
 
 interface Settings {
   main_video_url?: string
+  main_video_title?: string
   start_time?: string
 }
 
@@ -61,6 +62,22 @@ export default function AdminSettingsForm({ settings }: Props) {
         />
         <p className="text-xs text-(--text-muted) mt-1">
           הסרטון שיופיע אוטומטית בסיום הספירה לאחור
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold mb-1.5">
+          📺 שם הסרטון (לחיפוש בטלוויזיה)
+        </label>
+        <input
+          name="main_video_title"
+          type="text"
+          defaultValue={settings?.main_video_title ?? ''}
+          placeholder="למשל: ליל הסדר קיבוץ גת 2026"
+          className="input"
+        />
+        <p className="text-xs text-(--text-muted) mt-1">
+          יוצג למשתמשים כדי שיוכלו לחפש ביוטיוב בטלוויזיה
         </p>
       </div>
 

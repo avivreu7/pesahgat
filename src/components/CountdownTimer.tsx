@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from 'react'
 interface Greeting { id: string; family_name: string; message: string }
 
 interface Props {
-  targetIso: string
-  videoUrl:  string
-  greetings?: Greeting[]
+  targetIso:   string
+  videoUrl:    string
+  videoTitle?: string
+  greetings?:  Greeting[]
 }
 
 interface BubbleInstance {
@@ -134,9 +135,10 @@ function FloatingBubble({ b, onDone }: { b: BubbleInstance; onDone: (id: number)
 }
 
 /* ── Main component ───────────────────────────────────── */
-export default function CountdownTimer({ targetIso, videoUrl, greetings = [] }: Props) {
-  const [liveTarget,     setLiveTarget]     = useState(targetIso)
-  const [liveVideoUrl,   setLiveVideoUrl]   = useState(videoUrl)
+export default function CountdownTimer({ targetIso, videoUrl, videoTitle = '', greetings = [] }: Props) {
+  const [liveTarget,      setLiveTarget]     = useState(targetIso)
+  const [liveVideoUrl,    setLiveVideoUrl]   = useState(videoUrl)
+  const [liveVideoTitle,  setLiveVideoTitle] = useState(videoTitle)
   const [liveGreetings,  setLiveGreetings]  = useState<Greeting[]>(greetings)
   const [time,  setTime]  = useState(() => calcRemaining(targetIso))
   const [phase, setPhase] = useState<'counting' | 'fading' | 'video'>(() =>
@@ -180,8 +182,9 @@ export default function CountdownTimer({ targetIso, videoUrl, greetings = [] }: 
         const res = await fetch('/api/settings', { cache: 'no-store' })
         if (!res.ok) return
         const data = await res.json()
-        if (data.start_time)              setLiveTarget(t => t !== data.start_time ? data.start_time : t)
-        if (data.main_video_url !== undefined) setLiveVideoUrl(data.main_video_url)
+        if (data.start_time)                    setLiveTarget(t => t !== data.start_time ? data.start_time : t)
+        if (data.main_video_url  !== undefined) setLiveVideoUrl(data.main_video_url)
+        if (data.main_video_title !== undefined) setLiveVideoTitle(data.main_video_title ?? '')
       } catch { /* silent */ }
     }
     const id = setInterval(poll, 15_000)
@@ -283,6 +286,25 @@ export default function CountdownTimer({ targetIso, videoUrl, greetings = [] }: 
             <p className="text-center text-sm mt-3 font-semibold" style={{ color: 'var(--text-muted)' }}>
               🎉 הסדר מתחיל – חג פסח שמח!
             </p>
+
+            {/* WhatsApp share + TV search */}
+            <div className="glass mt-4 p-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(liveVideoUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm no-underline"
+                style={{ background: '#25D366', borderColor: '#25D366' }}
+              >
+                📱 שלח בווטספ
+              </a>
+              {liveVideoTitle && (
+                <p className="text-sm text-center" style={{ color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                  📺 לצפייה בטלוויזיה — חפשו ביוטיוב:<br />
+                  <strong style={{ color: 'var(--wheat)', fontSize: '0.95rem' }}>{liveVideoTitle}</strong>
+                </p>
+              )}
+            </div>
           </div>
         )}
 

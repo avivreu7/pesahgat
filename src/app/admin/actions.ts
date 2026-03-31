@@ -16,14 +16,15 @@ function toIsraelISO(datetimeLocal: string): string {
 
 /* ── Settings ────────────────────────────────────────── */
 export async function saveSettingsAction(formData: FormData) {
-  const main_video_url = (formData.get('main_video_url') as string).trim()
-  const raw_start_time = (formData.get('start_time') as string).trim()
-  const start_time     = toIsraelISO(raw_start_time)
+  const main_video_url   = (formData.get('main_video_url') as string).trim()
+  const main_video_title = ((formData.get('main_video_title') as string) ?? '').trim()
+  const raw_start_time   = (formData.get('start_time') as string).trim()
+  const start_time       = toIsraelISO(raw_start_time)
 
   const supabase = await createClient()
   const { error } = await supabase
     .from('settings')
-    .upsert({ id: 1, main_video_url, start_time }, { onConflict: 'id' })
+    .upsert({ id: 1, main_video_url, main_video_title, start_time }, { onConflict: 'id' })
 
   if (error) throw new Error(error.message)
   revalidatePath('/admin')

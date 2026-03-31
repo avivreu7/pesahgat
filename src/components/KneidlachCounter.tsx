@@ -138,8 +138,9 @@ export default function KneidlachCounter({ initial }: Props) {
 
   /* ── Name input screen ──────────────────────────────── */
   if (!name || editing) {
+    const maxCount = makers[0]?.count ?? 1
     return (
-      <div className="glass p-6 sm:p-8 flex flex-col items-center gap-5 text-center w-full" style={{ minHeight: 340 }}>
+      <div className="glass p-6 sm:p-8 flex flex-col items-center gap-5 text-center w-full">
         <div>
           <h2 className="heading-section mb-1">🫕 קניידלך הקיבוץ</h2>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
@@ -167,6 +168,40 @@ export default function KneidlachCounter({ initial }: Props) {
             )}
           </div>
         </form>
+
+        {/* Live preview — total + leaderboard */}
+        {total > 0 && (
+          <div className="w-full max-w-xs flex flex-col items-center gap-3 pt-2 border-t" style={{ borderColor: 'rgba(212,168,67,0.2)' }}>
+            <div className="flex items-center gap-3">
+              <span style={{ fontSize: '2.2rem', lineHeight: 1 }}>🫕</span>
+              <div>
+                <p className="font-extrabold text-2xl" style={{ color: 'var(--wheat)', lineHeight: 1 }}>
+                  <AnimatedCount count={total} />
+                </p>
+                <p className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>קניידלך בקיבוץ עד כה</p>
+              </div>
+            </div>
+            {makers.length > 0 && (
+              <div className="w-full flex flex-col gap-1.5">
+                <p className="text-xs font-bold tracking-widest uppercase" style={{ color: 'var(--text-muted)' }}>🏆 טבלת המכינים</p>
+                {makers.map((m, i) => (
+                  <div key={m.maker_name} className="glass-sm flex flex-col gap-1 px-3 py-2 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 font-semibold text-sm" style={{ color: 'var(--text-main)' }}>
+                        <span style={{ minWidth: '1.4rem' }}>{i < 3 ? MEDALS[i] : `${i + 1}.`}</span>
+                        {m.maker_name}
+                      </span>
+                      <span className="font-extrabold text-sm" style={{ color: 'var(--wheat)' }}>{m.count} 🫕</span>
+                    </div>
+                    <div style={{ height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${Math.round((m.count / maxCount) * 100)}%`, borderRadius: 4, background: 'linear-gradient(90deg, rgba(212,168,67,0.5), rgba(139,38,53,0.5))', transition: 'width 0.4s ease' }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     )
   }

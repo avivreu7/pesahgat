@@ -66,14 +66,13 @@ export default function NewsTicker() {
         }}>מבזק</span>
       </div>
 
-      {/* Scrolling text */}
+      {/* Scrolling text — two copies for seamless loop */}
       <div style={{ overflow: 'hidden', flex: 1, height: '100%', display: 'flex', alignItems: 'center' }}>
         <div
           key={combined}
           style={{
-            display: 'inline-block',
+            display: 'inline-flex',
             whiteSpace: 'nowrap',
-            paddingLeft: '100%',
             animation: `tickerScroll ${speed}s linear infinite`,
             color: '#F0C96A',
             fontWeight: 700,
@@ -82,9 +81,8 @@ export default function NewsTicker() {
             textShadow: '0 1px 4px rgba(0,0,0,0.5)',
           }}
         >
-          {combined}
-          <span style={{ padding: '0 60px' }} aria-hidden="true">✦</span>
-          {combined}
+          <span style={{ paddingLeft: 48 }}>{combined}&nbsp;&nbsp;&nbsp;✦&nbsp;&nbsp;&nbsp;</span>
+          <span aria-hidden="true" style={{ paddingLeft: 0 }}>{combined}&nbsp;&nbsp;&nbsp;✦&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
 

@@ -18,15 +18,16 @@ export default async function HomePage() {
     { data: greetings },
     { data: images },
   ] = await Promise.all([
-    supabase.from('settings').select('main_video_url, start_time').eq('id', 1).maybeSingle(),
+    supabase.from('settings').select('main_video_url, main_video_title, start_time').eq('id', 1).maybeSingle(),
     supabase.from('promo_videos').select('id, title, video_url').order('created_at', { ascending: false }),
     supabase.from('greetings').select('id, family_name, message, gif_url, created_at')
       .order('created_at', { ascending: false }).limit(80),
     supabase.from('promo_images').select('id, title, image_url').order('created_at', { ascending: true }),
   ])
 
-  const targetIso    = settings?.start_time     ?? FALLBACK_TIME
-  const videoUrl     = settings?.main_video_url ?? FALLBACK_VIDEO
+  const targetIso    = settings?.start_time      ?? FALLBACK_TIME
+  const videoUrl     = settings?.main_video_url  ?? FALLBACK_VIDEO
+  const videoTitle   = (settings as { main_video_title?: string } | null)?.main_video_title ?? ''
   const promoList    = promos    ?? []
   const greetingList = greetings ?? []
   const imageList    = images    ?? []
@@ -48,7 +49,7 @@ export default async function HomePage() {
 
       {/* ── Countdown + video ───────────────────────────── */}
       <div className="glass p-6 sm:p-10 w-full max-w-3xl fade-in">
-        <CountdownTimer targetIso={targetIso} videoUrl={videoUrl} greetings={greetingList} />
+        <CountdownTimer targetIso={targetIso} videoUrl={videoUrl} videoTitle={videoTitle} greetings={greetingList} />
       </div>
 
       {/* ── Photo carousel ──────────────────────────────── */}
