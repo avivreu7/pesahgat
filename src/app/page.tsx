@@ -67,6 +67,8 @@ export default async function HomePage() {
           { href: '/quilt',      emoji: '🎨', title: 'שמיכת הטלאים',        desc: 'כל משפחה מציירת טלאי אחד',    btn: 'ציירו',  style: 'btn-gold' },
           { href: '/food',       emoji: '🍽', title: 'יד 2 של החג',          desc: 'הציעו מנות לחברי הקיבוץ 😄',  btn: 'כנסו',   style: 'btn-primary' },
           { href: '/kneidlach',  emoji: '🫕', title: 'קניידלך הקיבוץ',      desc: 'ספרו כמה קניידלך הכנתם 🏆',   btn: 'ספרו',   style: 'btn-gold' },
+          { href: '/stock',      emoji: '📈', title: 'בורסת החג',           desc: 'סחרו במניות פסח בזמן אמת 🪙',  btn: 'סחרו',   style: 'btn-gold' },
+          { href: '/elijah-map', emoji: '🗺️', title: 'אליהו השליח',         desc: 'עקבו אחרי אליהו בקיבוץ גת 🧙‍♂️', btn: 'עקבו',  style: 'btn-primary' },
         ].map(b => (
           <a
             key={b.href}

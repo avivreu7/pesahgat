@@ -600,6 +600,47 @@ body {
   opacity: 0.85;
 }
 
+/* ── Stock market ───────────────────────────────────────── */
+@keyframes liveDotPulse {
+  0%   { box-shadow: 0 0 0 0   rgba(34,197,94,0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0   rgba(34,197,94,0); }
+}
+@keyframes toastSlideIn {
+  from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+@keyframes toastSlideOut {
+  from { transform: translateX(-50%) translateY(0);    opacity: 1; }
+  to   { transform: translateX(-50%) translateY(120%); opacity: 0; }
+}
+
+/* ── Elijah map ─────────────────────────────────────────── */
+@keyframes elijahBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+.elijah-map-marker { transition: transform 2.5s ease !important; }
+
+/* Leaflet speech bubble tooltip */
+.elijah-speech-tooltip {
+  background: var(--glass-bg) !important;
+  border: 1.5px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  padding: 8px 12px !important;
+  font-family: var(--font-assistant), sans-serif !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: var(--text-main) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+  white-space: normal !important;
+  max-width: 200px !important;
+  text-align: center !important;
+  direction: rtl !important;
+}
+.elijah-speech-tooltip::before { display: none !important; }
+.elijah-speech-tooltip.leaflet-tooltip-top::before { display: none !important; }
+
 @keyframes tickerShimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
