@@ -487,85 +487,84 @@ body {
 }
 /* ── Premium footer business card ─────────────────────── */
 .footer-premium {
-  background: linear-gradient(180deg, transparent 0%, rgba(10,5,1,0.93) 50%, rgba(6,2,0,0.98) 100%);
-  padding: 36px 16px 110px;
+  padding: 32px 16px 110px;
   text-align: center;
-  border-top: 1px solid rgba(212,168,67,0.18);
-  margin-top: 0;
+  border-top: 1px solid var(--glass-border);
 }
 .footer-credit {
-  font-size: 0.76rem;
-  color: rgba(212,168,67,0.38);
-  margin-bottom: 22px;
-  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
 }
 /* Animated gradient border wrapper */
 .ads-border-wrap {
   display: inline-block;
-  border-radius: 1.6rem;
+  border-radius: 1.4rem;
   padding: 1.5px;
   background: linear-gradient(120deg, #D4A843 0%, #8B2635 30%, #F0C96A 55%, #8B2635 78%, #D4A843 100%);
   background-size: 280% 100%;
   animation: adsBorderFlow 3.5s linear infinite;
-  box-shadow: 0 0 28px rgba(212,168,67,0.12), 0 0 60px rgba(139,38,53,0.08);
+  box-shadow: 0 4px 24px rgba(212,168,67,0.15), 0 1px 8px rgba(139,38,53,0.1);
 }
 @keyframes adsBorderFlow {
   0%   { background-position: 0% 50%; }
   100% { background-position: 280% 50%; }
 }
-/* Dark card */
+/* Glass card — matches site language */
 .ads-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
-  max-width: 310px;
+  gap: 6px;
+  max-width: 300px;
   width: 100%;
-  padding: 26px 30px 22px;
-  background: linear-gradient(150deg, #1c0e04 0%, #0e0602 60%, #130801 100%);
-  border-radius: 1.45rem;
+  padding: 22px 28px 18px;
+  background: var(--glass-bg);
+  border-radius: 1.3rem;
   text-decoration: none;
   position: relative;
   overflow: hidden;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
-/* Inner top-edge highlight line */
+/* Subtle top shimmer line */
 .ads-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 10%; right: 10%; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,168,67,0.55), transparent);
+  top: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,168,67,0.6), transparent);
 }
-/* Ambient inner glow */
+/* Warm ambient glow from top */
 .ads-card::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(212,168,67,0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse 80% 35% at 50% 0%, rgba(212,168,67,0.07) 0%, transparent 70%);
   pointer-events: none;
 }
 .ads-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 30px rgba(212,168,67,0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 32px rgba(139,38,53,0.12), 0 0 20px rgba(212,168,67,0.1);
 }
 /* Lightning icon */
 .ads-icon {
-  font-size: 2.2rem;
+  font-size: 2rem;
   line-height: 1;
-  filter: drop-shadow(0 0 10px rgba(212,168,67,0.65)) drop-shadow(0 0 22px rgba(212,168,67,0.3));
+  filter: drop-shadow(0 0 8px rgba(212,168,67,0.5));
   margin-bottom: 2px;
   animation: iconPulse 3s ease-in-out infinite;
 }
 @keyframes iconPulse {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(212,168,67,0.6)) drop-shadow(0 0 18px rgba(212,168,67,0.25)); }
-  50%       { filter: drop-shadow(0 0 16px rgba(212,168,67,0.9)) drop-shadow(0 0 32px rgba(212,168,67,0.4)); }
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(212,168,67,0.45)); }
+  50%       { filter: drop-shadow(0 0 14px rgba(212,168,67,0.8)) drop-shadow(0 0 26px rgba(212,168,67,0.3)); }
 }
 /* Company name with moving shimmer */
 .ads-name {
-  font-size: 1.22rem;
+  font-size: 1.15rem;
   font-weight: 900;
-  letter-spacing: 0.04em;
-  background: linear-gradient(90deg, #B8882A 0%, #F5D878 28%, #fff8e8 50%, #F5D878 72%, #B8882A 100%);
+  letter-spacing: 0.03em;
+  background: linear-gradient(90deg, #8B5E1A 0%, #C8921F 22%, #D4A843 45%, #F0C96A 55%, #D4A843 68%, #C8921F 82%, #8B5E1A 100%);
   background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -579,24 +578,26 @@ body {
 /* Tagline */
 .ads-tagline {
   font-size: 0.7rem;
-  color: rgba(200,175,120,0.52);
+  color: var(--text-muted);
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
 }
 /* Gold separator */
 .ads-sep {
-  width: 36px;
+  width: 32px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,168,67,0.45), transparent);
-  margin: 3px 0;
+  background: linear-gradient(90deg, transparent, rgba(212,168,67,0.5), transparent);
+  margin: 2px 0;
 }
 /* CTA */
 .ads-cta {
-  font-size: 0.71rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: rgba(212,168,67,0.72);
-  letter-spacing: 0.06em;
+  color: var(--wine);
+  letter-spacing: 0.05em;
   direction: rtl;
+  opacity: 0.85;
 }
 
 @keyframes tickerShimmer {
