@@ -3,8 +3,8 @@
 import { useEffect, useRef } from 'react'
 import type { Waypoint } from './ElijahMap'
 
-// קיבוץ גת — מרכז הקיבוץ
-const KIBBUTZ_CENTER: [number, number] = [31.6285, 34.7936]
+// קיבוץ גת — מרכז הקיבוץ (חדר אוכל)
+const KIBBUTZ_CENTER: [number, number] = [31.6285, 34.7935]
 
 export default function MapComponent({ waypoints, currentIdx, message }: {
   waypoints: Waypoint[]
