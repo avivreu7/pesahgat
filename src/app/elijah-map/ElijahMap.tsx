@@ -10,17 +10,23 @@ export interface Waypoint {
   pos: [number, number]
 }
 
+// Kibbutz Gat — מועצה אזורית יואב (31.70°N, 34.85°E)
 export const WAYPOINTS: Waypoint[] = [
-  { name: 'חדר אוכל',     pos: [31.6145, 34.7748] },
-  { name: 'בית ילדים',    pos: [31.6138, 34.7758] },
-  { name: 'מגרש ספורט',  pos: [31.6128, 34.7764] },
-  { name: 'גן הקיבוץ',   pos: [31.6153, 34.7738] },
-  { name: 'ספרייה',       pos: [31.6162, 34.7746] },
-  { name: 'בריכה',        pos: [31.6123, 34.7752] },
-  { name: 'בית תרבות',   pos: [31.6140, 34.7736] },
-  { name: 'שיכון א׳',    pos: [31.6156, 34.7762] },
-  { name: 'שיכון ב׳',    pos: [31.6118, 34.7740] },
-  { name: 'מחסן',         pos: [31.6131, 34.7770] },
+  { name: 'חדר אוכל',         pos: [31.7015, 34.8500] },
+  { name: 'בית ילדים א׳',     pos: [31.7021, 34.8508] },
+  { name: 'בית ילדים ב׳',     pos: [31.7026, 34.8494] },
+  { name: 'מגרש ספורט',       pos: [31.7007, 34.8513] },
+  { name: 'גן הקיבוץ',        pos: [31.7031, 34.8503] },
+  { name: 'ספרייה',            pos: [31.7011, 34.8489] },
+  { name: 'בריכה',             pos: [31.6999, 34.8505] },
+  { name: 'בית תרבות',        pos: [31.7018, 34.8494] },
+  { name: 'שיכון א׳',         pos: [31.7023, 34.8512] },
+  { name: 'שיכון ב׳',         pos: [31.7004, 34.8497] },
+  { name: 'לול',               pos: [31.6995, 34.8516] },
+  { name: 'מחסן',              pos: [31.7029, 34.8481] },
+  { name: 'בוסתן',             pos: [31.7036, 34.8511] },
+  { name: 'מרפאה',             pos: [31.7009, 34.8521] },
+  { name: 'שער הכניסה',       pos: [31.6991, 34.8487] },
 ]
 
 const MESSAGES = [
@@ -36,8 +42,8 @@ const MESSAGES = [
   'הכוס שלי מתמלאת לאט לאט... מישהו שם לב? 😏',
 ]
 
-const MOVE_MS   = 18_000   // every 18s move to next house
-const MSG_EVERY = 3        // show message every 3 stops
+const MOVE_MS   = 8_000    // every 8s move to next house — always in motion
+const MSG_EVERY = 4        // show message every 4 stops
 
 export default function ElijahMap() {
   const [wpIdx, setWpIdx]           = useState(0)
