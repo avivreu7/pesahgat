@@ -485,12 +485,118 @@ body {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.footer-biz-card {
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+/* ── Premium footer business card ─────────────────────── */
+.footer-premium {
+  background: linear-gradient(180deg, transparent 0%, rgba(10,5,1,0.93) 50%, rgba(6,2,0,0.98) 100%);
+  padding: 36px 16px 110px;
+  text-align: center;
+  border-top: 1px solid rgba(212,168,67,0.18);
+  margin-top: 0;
 }
-.footer-biz-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(90,55,10,0.14), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+.footer-credit {
+  font-size: 0.76rem;
+  color: rgba(212,168,67,0.38);
+  margin-bottom: 22px;
+  letter-spacing: 0.08em;
+}
+/* Animated gradient border wrapper */
+.ads-border-wrap {
+  display: inline-block;
+  border-radius: 1.6rem;
+  padding: 1.5px;
+  background: linear-gradient(120deg, #D4A843 0%, #8B2635 30%, #F0C96A 55%, #8B2635 78%, #D4A843 100%);
+  background-size: 280% 100%;
+  animation: adsBorderFlow 3.5s linear infinite;
+  box-shadow: 0 0 28px rgba(212,168,67,0.12), 0 0 60px rgba(139,38,53,0.08);
+}
+@keyframes adsBorderFlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 280% 50%; }
+}
+/* Dark card */
+.ads-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  max-width: 310px;
+  width: 100%;
+  padding: 26px 30px 22px;
+  background: linear-gradient(150deg, #1c0e04 0%, #0e0602 60%, #130801 100%);
+  border-radius: 1.45rem;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+/* Inner top-edge highlight line */
+.ads-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,168,67,0.55), transparent);
+}
+/* Ambient inner glow */
+.ads-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(212,168,67,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ads-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 30px rgba(212,168,67,0.12);
+}
+/* Lightning icon */
+.ads-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 10px rgba(212,168,67,0.65)) drop-shadow(0 0 22px rgba(212,168,67,0.3));
+  margin-bottom: 2px;
+  animation: iconPulse 3s ease-in-out infinite;
+}
+@keyframes iconPulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(212,168,67,0.6)) drop-shadow(0 0 18px rgba(212,168,67,0.25)); }
+  50%       { filter: drop-shadow(0 0 16px rgba(212,168,67,0.9)) drop-shadow(0 0 32px rgba(212,168,67,0.4)); }
+}
+/* Company name with moving shimmer */
+.ads-name {
+  font-size: 1.22rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #B8882A 0%, #F5D878 28%, #fff8e8 50%, #F5D878 72%, #B8882A 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: adsNameShimmer 2.8s linear infinite;
+}
+@keyframes adsNameShimmer {
+  from { background-position: 220% center; }
+  to   { background-position: 0%   center; }
+}
+/* Tagline */
+.ads-tagline {
+  font-size: 0.7rem;
+  color: rgba(200,175,120,0.52);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+/* Gold separator */
+.ads-sep {
+  width: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,168,67,0.45), transparent);
+  margin: 3px 0;
+}
+/* CTA */
+.ads-cta {
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: rgba(212,168,67,0.72);
+  letter-spacing: 0.06em;
+  direction: rtl;
 }
 
 @keyframes tickerShimmer {
